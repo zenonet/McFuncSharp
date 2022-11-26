@@ -24,9 +24,9 @@ public static class FunctionalCommandCreation
         return cmd;
     }
 
-    public static SetBlock Setblock(Vector position, Block block)
+    public static SetBlock Setblock(Vector position, Block block, SetBlockMode mode)
     {
-        SetBlock cmd = new(position, block);
+        SetBlock cmd = new(position, block, mode);
         OnLoadCommands.Add(cmd);
         return cmd;
     }
