@@ -37,4 +37,11 @@ public static class FunctionalCommandCreation
         OnLoadCommands.Add(cmd);
         return cmd;
     }
+    
+    public static Fill Fill(Vector start, Vector end, Block block, FillMode mode = FillMode.Replace)
+    {
+        Fill cmd = new(start, end, block, mode);
+        OnLoadCommands.Add(cmd);
+        return cmd;
+    }
 }
