@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuncSharp", "FuncSharp\FuncSharp.csproj", "{5967FD78-90AD-4B0F-ACC1-E4BA1DEBD41F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuncSharp.Core", "FuncSharp.Core\FuncSharp.Core.csproj", "{4446587F-4A05-4CE7-B757-BFB3CF838D44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{F279B936-0E6D-4925-AF32-B4827653E800}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{5967FD78-90AD-4B0F-ACC1-E4BA1DEBD41F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5967FD78-90AD-4B0F-ACC1-E4BA1DEBD41F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5967FD78-90AD-4B0F-ACC1-E4BA1DEBD41F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4446587F-4A05-4CE7-B757-BFB3CF838D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4446587F-4A05-4CE7-B757-BFB3CF838D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4446587F-4A05-4CE7-B757-BFB3CF838D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4446587F-4A05-4CE7-B757-BFB3CF838D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F279B936-0E6D-4925-AF32-B4827653E800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F279B936-0E6D-4925-AF32-B4827653E800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F279B936-0E6D-4925-AF32-B4827653E800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F279B936-0E6D-4925-AF32-B4827653E800}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
