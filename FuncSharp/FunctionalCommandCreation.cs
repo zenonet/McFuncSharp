@@ -24,7 +24,7 @@ public static class FunctionalCommandCreation
         return cmd;
     }
 
-    public static SetBlock Setblock(Vector position, Block block, SetBlockMode mode = SetBlockMode.Replace)
+    public static SetBlock SetBlock(Vector position, Block block, SetBlockMode mode = SetBlockMode.Replace)
     {
         SetBlock cmd = new(position, block, mode);
         OnLoadCommands.Add(cmd);
