@@ -13,7 +13,7 @@ public class SetBlock : CommandBase
         Block = block;
     }
 
-    public override string Generate()
+    protected override string GenerateInternal()
     {
         return $"setblock {Position} {Block}";
     }
