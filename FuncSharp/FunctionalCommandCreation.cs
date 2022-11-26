@@ -30,4 +30,11 @@ public static class FunctionalCommandCreation
         OnLoadCommands.Add(cmd);
         return cmd;
     }
+
+    public static Kill Kill(string target)
+    {
+        Kill cmd = new(target);
+        OnLoadCommands.Add(cmd);
+        return cmd;
+    }
 }
