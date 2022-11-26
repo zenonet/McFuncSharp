@@ -15,6 +15,6 @@ public class SetBlock : CommandBase
 
     public override string Generate()
     {
-        return $"/setblock {Position} {Block}";
+        return $"setblock {Position} {Block}";
     }
 }
