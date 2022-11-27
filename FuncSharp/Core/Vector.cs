@@ -43,4 +43,9 @@ public class Vector
     {
         return new(a.X / b, a.Y / b, a.Z / b);
     }
+
+    public float DistanceTo(Vector vector)
+    {
+        return (float)Math.Sqrt(Math.Pow(X - vector.X, 2) + Math.Pow(Y - vector.Y, 2) + Math.Pow(Z - vector.Z, 2));
+    }
 }
