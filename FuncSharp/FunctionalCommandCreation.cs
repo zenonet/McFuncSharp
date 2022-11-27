@@ -75,4 +75,11 @@ public static class FunctionalCommandCreation
         CurrentCommandList.Add(cmd);
         return cmd;
     }
+    
+    public static GameRule GameRule(string name, string value)
+    {
+        GameRule cmd = new(name, value);
+        CurrentCommandList.Add(cmd);
+        return cmd;
+    }
 }
