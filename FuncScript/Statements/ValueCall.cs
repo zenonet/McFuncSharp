@@ -39,7 +39,7 @@ public class ValueCall : Statement, IInitializable
         }
 
         Id = IdManager.GetId();
-        //TODO: Add the line to allocate the variable
+
         MemoryManagement.SetVariable(Id, ((FuncScriptValue)value).Generate()).Add();
 
         tokenList.Pop();
