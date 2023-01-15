@@ -1,0 +1,6 @@
+asbest = 6
+bsbest = 2
+
+summe = (asbest * (bsbest + 2))
+
+say(summe)
