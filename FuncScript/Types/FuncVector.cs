@@ -28,7 +28,7 @@ public class FuncVector : FuncScriptValue
         // Remove the vector keyword
         list.Pop();
         
-        if(list.Peek().RawContent != "[")
+        if(list.Peek().Type != TokenType.OpeningSquareBrace)
         {
             goto error;
         }
@@ -56,6 +56,13 @@ public class FuncVector : FuncScriptValue
         }
 
         result = new(new(float.Parse(xValue.Value), float.Parse(yValue.Value), float.Parse(zValue.Value)));
+
+        if(!list.StartsWith(TokenType.ClosingSquareBrace))
+        {
+            LoggingManager.LogError("Invalid vector_c. Expected closing square brace.");
+            goto error;
+        }
+        
         return true;
         
         error:
