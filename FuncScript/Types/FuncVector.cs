@@ -40,12 +40,14 @@ public class FuncVector : FuncScriptValue
             LoggingManager.LogError("Invalid first parameter for vector_c. Expected constant number.");
             goto error;
         }
+        list.TrimStart(TokenType.Comma);
 
         if (Parse(list) is not FuncNumber yValue)
         {
             LoggingManager.LogError("Invalid second parameter for vector_c. Expected constant number.");
             goto error;
         }
+        list.TrimStart(TokenType.Comma);
 
         if (Parse(list) is not FuncNumber zValue)
         {
