@@ -1,5 +1,4 @@
 ﻿using SlowLang.Engine.Tokens;
-using SlowLang.Engine.Values;
 
 namespace FuncScript.Types;
 
@@ -20,7 +19,7 @@ public class FuncNumber : FuncScriptValue
             return false;
         }
 
-        result = new (list[0].RawContent);
+        result = new (list.Pop().RawContent);
 
         // SlowLang doesn't support d's after numbers to make them doubles, so we do that manually here
         if (list.StartsWith(TokenType.Keyword) && list.Peek().RawContent.ToLower() == "d")

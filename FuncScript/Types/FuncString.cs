@@ -20,7 +20,7 @@ public class FuncString : FuncScriptValue
             return false;
         }
 
-        result = new (list[0].RawContent.Trim('"'));
+        result = new (list.Pop().RawContent.Trim('"'));
         
         return true;
     }
