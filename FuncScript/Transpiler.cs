@@ -13,68 +13,11 @@ public static class Transpiler
     {
         McFunctionBuilder = new();
 
-        Lexer.DefineTokens(new()
-        {
-            {"\".*?\"", TokenType.String},
-
-            {@"\(", TokenType.OpeningBrace},
-            {@"\)", TokenType.ClosingBrace},
-
-            {
-                @"\{|^block", TokenType.OpeningCurlyBrace
-            },
-            {
-                @"\}|^end", TokenType.ClosingCurlyBrace
-            },
-
-            {
-                @"\d+", TokenType.Int
-            },
-            {
-                @"\d+.?\d*(?:f|F)", TokenType.Float
-            },
-            {
-                @"(?:(?:t|T)(?:rue|RUE))|(?:(?:f|F)(?:alse|ALSE))", TokenType.Bool
-            },
-
-            {
-                @";", TokenType.Semicolon
-            },
-            {
-                @",", TokenType.Comma
-            },
-
-            {
-                @"\s*=\s*", TokenType.Equals
-            },
-            {
-                @"\s*<\s*", TokenType.LessThan
-            },
-            {
-                @"\s*>\s*", TokenType.GreaterThan
-            },
-
-            {
-                @"\s*\+\s*", TokenType.Plus
-            },
-            {
-                @"\s*-\s*", TokenType.Minus
-            },
-            {
-                @"\s*\*\s*", TokenType.Multiply
-            },
-            {
-                @"\s*/\s*", TokenType.Divide
-            },
-
-            {
-                @"\w+", TokenType.Keyword
-            }, //Needs to be the last one because it would accept nearly anything);
-        });
-
         TokenList tokens = Lexer.Lex(funcScriptCode);
 
         Statement.ParseMultiple(ref tokens);
+
+        Console.WriteLine("Done!");
     }
 
     /// <summary>
