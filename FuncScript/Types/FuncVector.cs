@@ -35,21 +35,21 @@ public class FuncVector : FuncScriptValue
         // Remove the opening bracket
         list.Pop();
 
-        if (Parse(list) is not FuncNumber xValue)
+        if (Parse(ref list) is not FuncNumber xValue)
         {
             LoggingManager.LogError("Invalid first parameter for vector_c. Expected constant number.");
             goto error;
         }
         list.TrimStart(TokenType.Comma);
 
-        if (Parse(list) is not FuncNumber yValue)
+        if (Parse(ref list) is not FuncNumber yValue)
         {
             LoggingManager.LogError("Invalid second parameter for vector_c. Expected constant number.");
             goto error;
         }
         list.TrimStart(TokenType.Comma);
 
-        if (Parse(list) is not FuncNumber zValue)
+        if (Parse(ref list) is not FuncNumber zValue)
         {
             LoggingManager.LogError("Invalid third parameter for vector_c. Expected constant number.");
             goto error;
