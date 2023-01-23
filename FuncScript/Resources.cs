@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using FuncSharp.Commands;
+﻿using FuncScript.Internal;
+using SlowLang.Engine;
 
 namespace FuncScript;
 
 public static class Resources
 {
+    public static string ReturnValue = string.Empty;
+    
     public static readonly Dictionary<string, Func<string[], string>> Functions = new()
     {/*
         {

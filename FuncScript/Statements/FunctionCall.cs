@@ -5,6 +5,7 @@ using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Statements.StatementRegistrations;
 using SlowLang.Engine.Tokens;
+using SlowLang.Engine.Values;
 
 namespace FuncScript.Statements;
 
@@ -16,6 +17,8 @@ public class FunctionCall : Statement, IInitializable
     }
 
     protected override bool CutTokensManually() => true;
+
+    private string returnValue;
 
     protected override bool OnParse(ref TokenList list)
     {
@@ -51,6 +54,13 @@ public class FunctionCall : Statement, IInitializable
             ((VariableNameProvider)parameters[0].Execute()).VariableName
         }));
 
+        returnValue = Resources.ReturnValue;
+
         return true;
+    }
+
+    public override Value Execute()
+    {
+        return new VariableNameProvider(returnValue);
     }
 }
