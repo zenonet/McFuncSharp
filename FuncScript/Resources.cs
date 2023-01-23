@@ -24,6 +24,10 @@ public static class Resources
         {
             "say", varname =>
             {
+                if (varname.Length != 1)
+                {
+                    LoggingManager.LogError($"The say function takes one argument but received {varname.Length} arguments.");
+                }
                 return $"tellraw @a {{\"storage\":\"funcscript_memory\",\"nbt\":\"variables.{varname[0]}\"}}";
             }
         },
