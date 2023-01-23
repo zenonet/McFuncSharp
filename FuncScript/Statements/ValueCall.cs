@@ -21,6 +21,7 @@ public class ValueCall : Statement, IInitializable
         StatementRegistration.Create<ValueCall>(TokenType.Int).Register();
         StatementRegistration.Create<ValueCall>(TokenType.Float).Register();
         StatementRegistration.Create<ValueCall>(TokenType.Bool).Register();
+        StatementRegistration.Create<ValueCall>(x => x.Peek().RawContent is "vector_c" or "entity",TokenType.Keyword).Register();
     }
 
 
@@ -30,7 +31,7 @@ public class ValueCall : Statement, IInitializable
     
     protected override bool OnParse(ref TokenList tokenList)
     {
-        value = Value.Parse(tokenList.List.Take(..1).AsTokenList());
+        value = Value.Parse(ref tokenList);
 
         if (value == null)
         {
@@ -42,7 +43,6 @@ public class ValueCall : Statement, IInitializable
 
         MemoryManagement.SetVariable(Id, ((FuncScriptValue)value).Generate()).Add();
 
-        tokenList.Pop();
         return true;
     }
 
