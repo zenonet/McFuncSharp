@@ -13,7 +13,7 @@ namespace FuncScript.Statements;
 
 public class ValueCall : Statement, IInitializable
 {
-    private Value? value;
+    private FuncScriptValue? value;
     
     public static void Initialize()
     {
@@ -29,14 +29,25 @@ public class ValueCall : Statement, IInitializable
     
     public string Id { get; private set; }
     
+    public bool IsConstantValueCall { get; private set; }
+    
+    public Value ConstantValue { get; private set; }
+    
     protected override bool OnParse(ref TokenList tokenList)
     {
-        value = Value.Parse(ref tokenList);
+        value = Value.Parse(ref tokenList) as FuncScriptValue;
 
         if (value == null)
         {
             Logger.LogError("Unable to parse {token}", tokenList.Peek());
             return false;
+        }
+
+        if (value is ConstFuncScriptValue)
+        {
+            IsConstantValueCall = true;
+            ConstantValue = value;
+            return true;
         }
 
         Id = IdManager.GetId();
@@ -48,6 +59,9 @@ public class ValueCall : Statement, IInitializable
 
     public override Value Execute()
     {
+        if (IsConstantValueCall)
+            return ConstantValue;
+        
         // Return the name of the Variable the value is stored in
         return new VariableNameProvider(Id);
     }
