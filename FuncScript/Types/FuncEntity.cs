@@ -23,7 +23,7 @@ public class FuncEntity : FuncScriptValue
 
         list.Pop();
 
-        if (!list.StartsWith(TokenType.Colon))
+        if (!list.StartsWith(TokenType.Dot))
         {
             result = null;
             return false;
@@ -46,6 +46,6 @@ public class FuncEntity : FuncScriptValue
 
     public override string Generate()
     {
-        return $"minecraft:{Value}";
+        return $"{Value}";
     }
 }
