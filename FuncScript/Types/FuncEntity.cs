@@ -4,7 +4,7 @@ using SlowLang.Engine.Tokens;
 
 namespace FuncScript.Types;
 
-public class FuncEntity : FuncScriptValue
+public class FuncEntity : ConstFuncScriptValue
 {
     public Entity Value { get; }
     
