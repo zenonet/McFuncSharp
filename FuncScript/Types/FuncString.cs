@@ -12,7 +12,7 @@ public class FuncString : FuncScriptValue
         Value = value;
     }
     
-    public static bool TryParse(TokenList list, out FuncString result)
+    public static bool TryParse(ref TokenList list, out FuncString result)
     {
         if (!list.StartsWith(TokenType.String))
         {

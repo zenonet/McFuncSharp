@@ -11,7 +11,7 @@ public class FuncNumber : FuncScriptValue
         Value = value;
     }
     
-    public static bool TryParse(TokenList list, out FuncNumber result)
+    public static bool TryParse(ref TokenList list, out FuncNumber result)
     {
         bool negative = false;
         if(list.StartsWith(TokenType.Minus))

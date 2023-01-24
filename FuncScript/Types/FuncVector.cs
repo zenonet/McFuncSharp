@@ -19,7 +19,7 @@ public class FuncVector : FuncScriptValue
         return $"[{Value.X}d,{Value.Y}d,{Value.Z}d]";
     }
     
-    public static bool TryParse(TokenList list, out FuncVector result)
+    public static bool TryParse(ref TokenList list, out FuncVector result)
     {
         if (!list.StartsWith(TokenType.Keyword) || list.Peek().RawContent != "vector_c")
         {
@@ -62,6 +62,8 @@ public class FuncVector : FuncScriptValue
             LoggingManager.LogError("Invalid vector_c. Expected closing square brace.");
             goto error;
         }
+
+        list.Pop();
         
         return true;
         

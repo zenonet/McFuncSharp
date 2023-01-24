@@ -13,7 +13,7 @@ public class FuncEntity : ConstFuncScriptValue
         Value = value;
     }
     
-    public static bool TryParse(TokenList list, out FuncEntity result)
+    public static bool TryParse(ref TokenList list, out FuncEntity result)
     {
         if (list.Peek().Type != TokenType.Keyword || list.Peek().RawContent != "entity")
         {
