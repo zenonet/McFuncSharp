@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FuncScript.Types;
+﻿using FuncScript.Types;
 using SlowLang.Engine;
 using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
@@ -47,12 +46,15 @@ public class FunctionCall : Statement, IInitializable
                 betweenBraces.Pop();
         }
 
+        FuncScriptValue[] values = new FuncScriptValue[parameters.Count];
+        
+        for (int i = 0; i < parameters.Count; i++)
+        {
+            values[i] = (FuncScriptValue) parameters[i].Execute();
+        }
 
         // Find the correct function definition
-        Transpiler.McFunctionBuilder.AppendLine(Resources.Functions[name](new[]
-        {
-            ((VariableNameProvider)parameters[0].Execute()).VariableName
-        }));
+        Transpiler.McFunctionBuilder.AppendLine(Resources.Functions[name](values));
 
         returnValue = Resources.ReturnValue;
 

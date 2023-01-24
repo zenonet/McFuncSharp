@@ -1,4 +1,6 @@
-﻿using FuncScript.Internal;
+﻿using System.Diagnostics;
+using FuncScript.Internal;
+using FuncScript.Types;
 using SlowLang.Engine;
 
 namespace FuncScript;
@@ -7,7 +9,7 @@ public static class Resources
 {
     public static string ReturnValue = string.Empty;
     
-    public static readonly Dictionary<string, Func<string[], string>> Functions = new()
+    public static readonly Dictionary<string, Func<FuncScriptValue[], string>> Functions = new()
     {/*
         {
             "kill", () =>
@@ -22,9 +24,9 @@ public static class Resources
             }
         },*/
         {
-            "say", varname =>
+            "say", parameters =>
             {
-                if (varname.Length != 1)
+                if (parameters.Length != 1)
                 {
                     LoggingManager.LogError($"The say function takes one argument but received {varname.Length} arguments.");
                 }
