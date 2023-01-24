@@ -13,13 +13,20 @@ public class FuncNumber : FuncScriptValue
     
     public static bool TryParse(TokenList list, out FuncNumber result)
     {
+        bool negative = false;
+        if(list.StartsWith(TokenType.Minus))
+        {
+            list.Pop();
+            negative = true;
+        }
+        
         if (!list.StartsWith(TokenType.Float) && !list.StartsWith(TokenType.Int))
         {
             result = null;
             return false;
         }
 
-        result = new (list.Pop().RawContent);
+        result = new ((negative ? "-" : string.Empty) + list.Pop().RawContent);
 
         // SlowLang doesn't support d's after numbers to make them doubles, so we do that manually here
         if (list.StartsWith(TokenType.Keyword) && list.Peek().RawContent.ToLower() == "d")
