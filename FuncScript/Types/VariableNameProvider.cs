@@ -2,7 +2,7 @@
 
 namespace FuncScript.Types;
 
-public class VariableNameProvider : Value
+public class VariableNameProvider : FuncScriptValue
 {
     public VariableNameProvider(string variableName)
     {
