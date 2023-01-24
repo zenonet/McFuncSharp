@@ -1,7 +1,9 @@
 ﻿using System.Text;
+using FuncScript.Types;
 using SlowLang.Engine;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Tokens;
+using SlowLang.Engine.Values;
 
 namespace FuncScript;
 
@@ -50,5 +52,12 @@ public static class Transpiler
     public static void Add(this string line)
     {
         McFunctionBuilder.AppendLine(line);
+    }
+    
+    public static string AsVarnameProvider(this Value val)
+    {
+        if(val is not VariableNameProvider)
+            LoggingManager.LogError($"Cannot use {val.GetType().Name} as a variable name provider");
+        return ((VariableNameProvider) val).VariableName;
     }
 }
