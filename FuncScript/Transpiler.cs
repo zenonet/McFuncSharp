@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using FuncScript.Types;
 using SlowLang.Engine;
 using SlowLang.Engine.Statements;
@@ -10,7 +11,11 @@ namespace FuncScript;
 public static class Transpiler
 {
     public static StringBuilder McFunctionBuilder { get; private set; } = new();
-    
+
+
+    public static List<string> prefixes = new();
+
+    public static string CombinedPrefix => string.Join(string.Empty, prefixes);
 
     public static void Transpile(string funcScriptCode, Config? config = null)
     {
@@ -51,7 +56,7 @@ public static class Transpiler
     /// </summary>
     public static void Add(this string line)
     {
-        McFunctionBuilder.AppendLine(line);
+        McFunctionBuilder.Append(Regex.Replace(line + "\n", @"(.*\w.*)", $"{CombinedPrefix}$1", RegexOptions.Multiline));
     }
     
     public static string AsVarnameProvider(this Value val)
