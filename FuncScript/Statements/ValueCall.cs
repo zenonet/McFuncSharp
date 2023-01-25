@@ -21,7 +21,7 @@ public class ValueCall : Statement, IInitializable
         StatementRegistration.Create<ValueCall>(TokenType.Int).Register();
         StatementRegistration.Create<ValueCall>(TokenType.Float).Register();
         StatementRegistration.Create<ValueCall>(TokenType.Bool).Register();
-        StatementRegistration.Create<ValueCall>(x => x.Peek().RawContent is "vector_c" or "entity",TokenType.Keyword).Register();
+        StatementRegistration.Create<ValueCall>(x => x.Peek().RawContent is "vector_c" or "entity" or "block",TokenType.Keyword).Register();
     }
 
 
