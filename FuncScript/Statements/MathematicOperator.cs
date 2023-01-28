@@ -31,7 +31,7 @@ public class MathematicOperator : Statement, IInitializable
         Statement left = Parse(ref list)!;
 
         if (list.Peek().Type is not (TokenType.Plus or TokenType.Minus or TokenType.Multiply or TokenType.Divide))
-            LoggingManager.LogError("Expected operator, got " + list.Peek().RawContent, LineNumber);
+            return false;
 
         // Remove operator
         TokenType operation = list.Pop().Type;
