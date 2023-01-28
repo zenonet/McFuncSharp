@@ -9,11 +9,4 @@ public abstract class FuncScriptValue : Value
     {
         return string.Empty;
     }
-
-    public string AsVarnameProvider()
-    {
-        if(this is not VariableNameProvider)
-            LoggingManager.LogError($"Cannot use {this.GetType().Name} as a variable name provider");
-        return ((VariableNameProvider) this).VariableName;
-    }
 }
