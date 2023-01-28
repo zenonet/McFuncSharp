@@ -65,19 +65,51 @@ public class IfStatement : Statement, IInitializable
 
         // Cut the body tokens from the list
         list.RemoveRange(..bodyTokenList.List.Count);
-        
+
         // Remove the closing curly brace
         list.Pop();
 
-        Transpiler.prefixes.Add(prefixForAllBodyStatements);    
-        
-        // Parse the statements in the body (manually to be able to add the conditional prefix)
-        while (bodyTokenList.List.Count > 0)
-        {
-            Statement.Parse(ref bodyTokenList);
-            bodyTokenList.TrimStart(TokenType.Semicolon);
-        }
-        
+        Transpiler.prefixes.Add(prefixForAllBodyStatements);
+
+        // Parse the statements in the body
+        Statement.ParseMultiple(ref bodyTokenList);
+
+        Transpiler.prefixes.Remove(prefixForAllBodyStatements);
+
+        if (list.List.Count <= 0 || list.Peek().RawContent != "else")
+            return true;
+
+
+        // Parse else block
+
+        // Remove the else keyword
+        list.Pop();
+
+        if (!list.StartsWith(TokenType.OpeningCurlyBrace))
+            LoggingManager.LogError("Expected opening curly brace after else keyword");
+        list.Pop();
+
+        // Parse the body
+        bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBrace, TokenType.ClosingCurlyBrace, Logger);
+
+        if (bodyTokenList == null)
+            LoggingManager.LogError("Invalid body after else keyword");
+
+        // Cut the body tokens from the list
+        list.RemoveRange(..bodyTokenList.List.Count);
+
+        // Remove the closing curly brace
+        list.Pop();
+
+        // Set the prefix to the else block
+        prefixForAllBodyStatements = $"execute unless data storage {MemoryManagement.MemoryTag} {{variables:{{{value.AsVarnameProvider()}:1}}}} run ";
+        Transpiler.prefixes.Add(prefixForAllBodyStatements);
+
+        // Parse the statements in the body
+        Statement.ParseMultiple(ref bodyTokenList);
+
+
+        // Remove the prefix
         Transpiler.prefixes.Remove(prefixForAllBodyStatements);
 
         return true;
