@@ -54,7 +54,7 @@ public class FunctionCall : Statement, IInitializable
         }
 
         // Find the correct function definition
-        Transpiler.McFunctionBuilder.AppendLine(Resources.Functions[name](values));
+        Resources.Functions[name](values).Add();
 
         returnValue = Resources.ReturnValue;
 
