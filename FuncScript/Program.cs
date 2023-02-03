@@ -38,14 +38,18 @@ if(args.Length != 1)
 
 string script = File.ReadAllText(args[0]);
 
-Transpiler.Transpile(script);
+Config config = new(
+    @"C:\Users\zeno\MultiMC\instances\Funcsharp\.minecraft\saves\FuncSharp LOOOOL\datapacks\first_funcsharp\",
+    "first_funcsharp");
+
+Transpiler.Transpile(script, config);
 
 
-LoadEntrypoint loadEntrypoint = new("load", Transpiler.McFunctionBuilder.ToString().CreateCommandArray());
+/*LoadEntrypoint loadEntrypoint = new("load", Transpiler.McFunctionBuilder.ToString().CreateCommandArray());
 
 DataPackGenerator generator = new(@"C:\Users\zeno\MultiMC\instances\Funcsharp\.minecraft\saves\FuncSharp LOOOOL\datapacks\first_funcsharp\", "first_funcsharp");
 
 generator.AddEntrypoint(loadEntrypoint);
 
-generator.Generate();
+generator.Generate();*/
 //File.WriteAllText(args[0], Transpiler.McFunctionBuilder.ToString());

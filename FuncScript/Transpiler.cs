@@ -1,6 +1,9 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using FuncScript.Types;
+using FuncSharp;
+using FuncSharp.Commands;
+using FuncSharp.DataPackGen;
 using SlowLang.Engine;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Tokens;
@@ -10,16 +13,22 @@ namespace FuncScript;
 
 public static class Transpiler
 {
-    public static StringBuilder McFunctionBuilder { get; private set; } = new();
+    public static StringBuilder McFunctionBuilder { get; set; } = new();
 
 
     public static List<string> prefixes = new();
 
     public static string CombinedPrefix => string.Join(string.Empty, prefixes);
+    
+    public static List<Entrypoint> AdditionalEntrypoints { get; set; } = new();
+    
+    public static Config Config { get; private set; }
 
-    public static void Transpile(string funcScriptCode, Config? config = null)
+    public static void Transpile(string funcScriptCode, Config config)
     {
-        config ??= new();
+        Config = config;
+        
+        DataPackGenerator generator = new DataPackGenerator(config.DataPackPath, config.DataPackNameSpace);
         
         McFunctionBuilder = new();
 
@@ -48,6 +57,16 @@ public static class Transpiler
         
         Statement.ParseMultiple(ref tokens);
 
+        // Add the load entrypoint
+        generator.AddEntrypoint(new LoadEntrypoint("load", McFunctionBuilder.ToString().CreateCommandArray()));
+
+        foreach (Entrypoint entrypoint in AdditionalEntrypoints)
+        {
+            generator.AddEntrypoint(entrypoint);
+        }
+        
+        generator.Generate();
+        
         Console.WriteLine("Done!");
     }
 

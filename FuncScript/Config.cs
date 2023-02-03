@@ -2,7 +2,18 @@
 
 public class Config
 {
-    public ReloadBehavior ReloadBehavior { get; set; } = ReloadBehavior.DetachOld;
+    public Config(string dataPackPath, string dataPackNameSpace, ReloadBehavior reloadBehavior = ReloadBehavior.DetachOld)
+    {
+        ReloadBehavior = reloadBehavior;
+        DataPackPath = dataPackPath;
+        DataPackNameSpace = dataPackNameSpace;
+    }
+
+    public ReloadBehavior ReloadBehavior { get; set; }
+    
+    public string DataPackPath { get; set; }
+    
+    public string DataPackNameSpace { get; set; }
 }
 
 /// <summary>
