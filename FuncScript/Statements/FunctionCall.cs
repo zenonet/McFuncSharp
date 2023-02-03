@@ -53,9 +53,22 @@ public class FunctionCall : Statement, IInitializable
             values[i] = (FuncScriptValue) parameters[i].Execute();
         }
 
-        // Find the correct function definition
-        Resources.Functions[name](values).Add();
-
+        if (Resources.Functions.ContainsKey(name))
+        {
+            // An internal function is being called
+            
+            // Find the correct function definition and add it
+            Resources.Functions[name](values).Add();
+        }else if (Transpiler.AdditionalEntrypoints.FirstOrDefault(x => x.Name == name) != null)
+        {
+            // A user defined function is being called
+            $"function {Transpiler.Config.DataPackNameSpace}:{name}".Add();
+        }
+        else
+        {
+            LoggingManager.LogError($"Function {name} not found");
+        }
+        
         returnValue = Resources.ReturnValue;
 
         return true;
