@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
@@ -80,7 +81,27 @@ public static class Resources
                        $"execute at @e[tag=blockPositioningMarker, limit=1] run setblock ~ ~ ~ {parameters[0].Generate()}\n" + // Set the block at the markers position
                        "kill @e[tag=blockPositioningMarker, limit=1]"; // Kill the marker
             }
-        }
-    };
+        },
+        {
+            "vector", parameters =>
+            {
+                if (parameters.Length != 3)
+                {
+                    LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three arguments but received {parameters.Length} arguments.");
+                }
+                
+                if (parameters.Any(x => x is not VariableNameProvider))
+                    LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three numbers as arguments but received {parameters[0].GetType().Name}.");
 
+
+                string id = IdManager.GetId();
+
+                ReturnValue = id;
+                
+                return $"data modify storage {MemoryManagement.MemoryTag} variables.{id} insert 0 from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
+                       $"data modify storage {MemoryManagement.MemoryTag} variables.{id} insert 1 from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}\n" +
+                       $"data modify storage {MemoryManagement.MemoryTag} variables.{id} insert 2 from storage {MemoryManagement.MemoryTag} variables.{parameters[2].AsVarnameProvider()}\n";
+            }
+        },
+    };
 }
