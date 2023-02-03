@@ -10,8 +10,8 @@ namespace FuncScript.Statements;
 public class VariableCall : Statement, IInitializable
 {
     public static List<string> Variables = new();
-    
-    private  string VariableName;
+
+    private string VariableName;
 
     public static void Initialize()
     {
@@ -23,9 +23,23 @@ public class VariableCall : Statement, IInitializable
         ).Register();
     }
 
+    protected override bool CutTokensManually()
+    {
+        return true;
+    }
+
+
     protected override bool OnParse(ref TokenList list)
     {
         VariableName = list.Pop().RawContent;
+
+        // If this is an accessor to a property of the variable, we need to parse that as well
+        while (list.List.Count > 1 && list.Peek().Type == TokenType.Dot && list.Peek(1).Type == TokenType.Keyword)
+        {
+            list.Pop();
+            VariableName += $".{list.Pop().RawContent}";
+        }
+
         return true;
     }
 
