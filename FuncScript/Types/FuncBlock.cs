@@ -33,7 +33,7 @@ public class FuncBlock : ConstFuncScriptValue
         
         if (!Enum.TryParse(list.Peek().RawContent, out Block block))
         {
-            LoggingManager.LogError("Unknown entity type: " + list.Peek().RawContent);
+            LoggingManager.LogError("Unknown block type: " + list.Peek().RawContent);
             result = null;
             return false;
         }
