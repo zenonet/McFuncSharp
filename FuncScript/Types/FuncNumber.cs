@@ -37,6 +37,6 @@ public class FuncNumber : FuncScriptValue
 
     public override string Generate()
     {
-        return Value;
+        return $"{Value}d";
     }
 }
