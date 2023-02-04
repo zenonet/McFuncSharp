@@ -90,8 +90,11 @@ public static class Resources
                     LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three arguments but received {parameters.Length} arguments.");
                 }
 
-                if (parameters.Any(x => x is not VariableNameProvider))
-                    LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three numbers as arguments but received {parameters[0].GetType().Name}.");
+                for (int i = 0; i < 3; i++)
+                {
+                    if (parameters[i] is not VariableNameProvider)
+                        LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three numbers as arguments but received {parameters[i].GetType().Name}.");
+                }
 
 
                 string id = IdManager.GetId();
