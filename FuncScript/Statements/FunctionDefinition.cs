@@ -74,7 +74,16 @@ public class FunctionDefinition : Statement, IInitializable
         // Restore the main string builder
         Transpiler.McFunctionBuilder = bufferedStringBuilder;
 
-        FunctionEntrypoint entrypoint = new FunctionEntrypoint(name, functionStringBuilder.ToString().CreateCommandArray());
+        Entrypoint entrypoint;
+
+        if (name == "tick")
+        {
+            entrypoint = new TickEntrypoint(name, functionStringBuilder.ToString().CreateCommandArray());
+        }
+        else
+        {
+            entrypoint = new FunctionEntrypoint(name, functionStringBuilder.ToString().CreateCommandArray());
+        }
         
         Transpiler.AdditionalEntrypoints.Add(entrypoint);
 
