@@ -36,6 +36,7 @@ public class VariableCall : Statement, IInitializable
         // If this is an accessor to a property of the variable, we need to parse that as well
         while (list.List.Count > 1 && list.Peek().Type == TokenType.Dot && list.Peek(1).Type == TokenType.Keyword)
         {
+            // TODO: Add indexer support
             list.Pop();
             VariableName += $".{list.Pop().RawContent}";
         }
