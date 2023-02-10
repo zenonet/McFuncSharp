@@ -107,5 +107,21 @@ public static class Resources
                        $"data modify storage {MemoryManagement.MemoryTag} variables.{id} insert 2 from storage {MemoryManagement.MemoryTag} variables.{parameters[2].AsVarnameProvider()}\n";
             }
         },
+        {
+            "getBlock", parameters =>
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The getBlock function takes one argument but received {parameters.Length} arguments.");
+
+                if (parameters[0] is not VariableNameProvider)
+                    LoggingManager.LogError($"The getBlock function takes a vector as its argument but received {parameters[0].GetType().Name}.");
+
+                string id = IdManager.GetId();
+                ReturnValue = id;
+                return $"data modify storage {MemoryManagement.MemoryTag} variables.{id}.type set value \"block\"\n" +
+                       MemoryManagement.MoveVariable(parameters[0].AsVarnameProvider(), $"{id}.pos");
+
+            }
+        }
     };
 }
