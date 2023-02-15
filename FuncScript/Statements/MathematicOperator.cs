@@ -57,7 +57,7 @@ public class MathematicOperator : Statement, IInitializable
         // Move result to the variable scoreboard
         MemoryManagement.MoveToStorage(variableName, "c").Add();
 
-
+        Transpiler.MemoryTypes.Add(variableName, typeof(FuncNumber));
         // Create a variable name provider for the result
         _variableNameProvider = new(variableName);
 

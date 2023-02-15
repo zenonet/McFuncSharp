@@ -56,8 +56,11 @@ public class VariableSetter : Statement, IInitializable
         if (value == null)
             return false;
 
-        MemoryManagement.MoveVariable(((VariableNameProvider) value.Execute()).VariableName, variableName).Add();
+        VariableNameProvider variableNameProvider = ((VariableNameProvider) value.Execute());
+        MemoryManagement.MoveVariable(variableNameProvider.VariableName, variableName).Add();
+
         VariableCall.Variables.Add(variableName);
+        Transpiler.MemoryTypes[variableName] = Transpiler.MemoryTypes[variableNameProvider.VariableName];
         return true;
     }
 }

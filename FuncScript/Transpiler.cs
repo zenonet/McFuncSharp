@@ -23,6 +23,8 @@ public static class Transpiler
     public static List<Entrypoint> AdditionalEntrypoints { get; set; } = new();
     
     public static Config Config { get; private set; }
+    
+    public static Dictionary<string, Type> MemoryTypes = new();
 
     public static void Transpile(string funcScriptCode, Config config)
     {
