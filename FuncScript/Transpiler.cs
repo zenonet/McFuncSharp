@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using FuncScript.Internal;
 using FuncScript.Types;
 using FuncSharp;
 using FuncSharp.Commands;
@@ -43,6 +44,10 @@ public static class Transpiler
                 McFunctionBuilder.AppendLine("execute as @e[tag=funcscript_controlled] run data merge entity @s {DeathLootTable:\"minecraft:empty\"}");
                 // Kill the entities
                 McFunctionBuilder.AppendLine("kill @e[tag=funcscript_controlled]");
+                
+                // Clear the memory
+                McFunctionBuilder.AppendLine("scoreboard players reset @a funcscript_memory");
+                McFunctionBuilder.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables");
                 break;
             case ReloadBehavior.DetachOld:
                 // Detach the entities
