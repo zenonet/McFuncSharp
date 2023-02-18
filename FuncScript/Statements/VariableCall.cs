@@ -41,6 +41,24 @@ public class VariableCall : Statement, IInitializable
             VariableName += $".{list.Pop().RawContent}";
         }
 
+        if (VariableName.Contains(".") && Transpiler.MemoryTypes[VariableName[..VariableName.IndexOf(".")]] == typeof(FuncVector))
+        {
+            if (VariableName[(VariableName.LastIndexOf(".") + 1)..] is "x" or "y" or "z")
+            {
+                VariableName = VariableName[..VariableName.LastIndexOf(".")] + (VariableName[(VariableName.LastIndexOf(".")+1)..] switch
+                {
+                    "x" => "[0]",
+                    "y" => "[1]",
+                    "z" => "[2]",
+                });
+                // Quick and dirty solution to make this indexer pass the variable type checks
+                if (VariableName.Contains('['))
+                {
+                    Transpiler.MemoryTypes[VariableName] = typeof(FuncNumber);
+                }
+            }
+        }
+
         return true;
     }
 

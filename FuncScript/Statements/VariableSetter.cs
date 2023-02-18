@@ -22,14 +22,14 @@ public class VariableSetter : Statement, IInitializable
                 {
                     // If that is not the case, there is the option that it is an indexer
                     // TODO: Implement indexer detection
-                    
-                    
+
+
                     // Of course, the last option is that the path ends here and there is one equal sign
-                    return list.Peek(i).Type == SlowLang.Engine.Tokens.TokenType.Equals && list.Peek(i+1).Type != SlowLang.Engine.Tokens.TokenType.Equals;
+                    return list.Peek(i).Type == SlowLang.Engine.Tokens.TokenType.Equals && list.Peek(i + 1).Type != SlowLang.Engine.Tokens.TokenType.Equals;
                 }
             }
-            
-            
+
+
             return false;
         }).AddPriority(1).Register();
     }
@@ -48,6 +48,25 @@ public class VariableSetter : Statement, IInitializable
             variableName += $".{list.Pop().RawContent}";
         }
 
+        // Allow for usage of xyz instead of [0], [1], [2] in vectors
+        if (variableName.Contains(".") && Transpiler.MemoryTypes[variableName[..variableName.IndexOf(".")]] == typeof(FuncVector))
+        {
+            if (variableName[(variableName.LastIndexOf(".") + 1)..] is "x" or "y" or "z")
+            {
+                variableName = variableName[..variableName.LastIndexOf(".")] + (variableName[(variableName.LastIndexOf(".")+1)..] switch
+                {
+                    "x" => "[0]",
+                    "y" => "[1]",
+                    "z" => "[2]",
+                });
+                // Quick and dirty solution to make this indexer pass the variable type checks
+                if (variableName.Contains('['))
+                {
+                    Transpiler.MemoryTypes[variableName] = typeof(FuncNumber);
+                }
+            }
+        }
+        
         list.Pop(); // Equals
 
         Statement? value = Parse(ref list);
