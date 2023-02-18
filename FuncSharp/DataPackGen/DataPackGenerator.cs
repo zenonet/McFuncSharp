@@ -5,6 +5,8 @@ public class DataPackGenerator
     public string Path { get; set; }
     public string Namespace { get; set; }
     public List<Entrypoint> Entrypoints { get; } = new();
+    
+    public List<BlockTag> BlockTags { get; } = new();
 
     private const string DatapackFormat = "7";
 
@@ -22,6 +24,11 @@ public class DataPackGenerator
     public void AddEntrypoint(Entrypoint entrypoint)
     {
         Entrypoints.Add(entrypoint);
+    }
+    
+    public void AddBlockTag(BlockTag blockTag)
+    {
+        BlockTags.Add(blockTag);
     }
 
     public void Generate()
@@ -43,6 +50,11 @@ public class DataPackGenerator
         foreach (Entrypoint entrypoint in Entrypoints)
         {
             entrypoint.GenerateFile(Path, this);
+        }
+        
+        foreach (BlockTag blockTag in BlockTags)
+        {
+            blockTag.GenerateFile(Path, this);
         }
     }
 
