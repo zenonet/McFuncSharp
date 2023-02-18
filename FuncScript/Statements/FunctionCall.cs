@@ -1,4 +1,5 @@
 ﻿using FuncScript.Types;
+using Microsoft.Extensions.Logging;
 using SlowLang.Engine;
 using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
@@ -66,7 +67,8 @@ public class FunctionCall : Statement, IInitializable
         }
         else
         {
-            LoggingManager.LogError($"Function {name} not found");
+            LoggingManager.ErrorLogger.LogWarning($"Function {name} not found. Assuming the function is defined somewhere else.");
+            $"function {Transpiler.Config.DataPackNameSpace}:{name}".Add();
         }
         
         returnValue = Resources.ReturnValue;
