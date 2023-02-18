@@ -31,7 +31,7 @@ public static class MemoryManagement
 
     public static string MoveToStorage(string variableName, string nameOnScoreboard)
     {
-        return "execute store result storage " + MemoryTag + " variables." + variableName + " int 1 run scoreboard players get " + nameOnScoreboard + " " + Computation.ComputationScoreboard;
+        return "execute store result storage " + MemoryTag + " variables." + variableName + " double 1 run scoreboard players get " + nameOnScoreboard + " " + Computation.ComputationScoreboard;
     }
 
 
