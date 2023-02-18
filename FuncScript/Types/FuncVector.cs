@@ -8,7 +8,15 @@ namespace FuncScript.Types;
 public class FuncVector : FuncScriptValue
 {
     public FuncSharp.Core.Vector Value { get; set; }
-    
+
+    [FuncPropertyList]
+    public static Dictionary<string, Type> Properties { get; }= new Dictionary<string, Type>()
+    {
+        {"x", typeof(FuncNumber)},
+        {"y", typeof(FuncNumber)},
+        {"z", typeof(FuncNumber)},
+    };
+
     public FuncVector(FuncSharp.Core.Vector value)
     {
         Value = value;
