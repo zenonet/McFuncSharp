@@ -40,7 +40,7 @@ string script = File.ReadAllText(args[0]);
 
 Config config = new(
     @"C:\Users\zeno\MultiMC\instances\Funcsharp\.minecraft\saves\FuncSharp LOOOOL\datapacks\first_funcsharp\",
-    "first_funcsharp");
+    "first_funcsharp", ReloadBehavior.KillOld);
 
 Transpiler.Transpile(script, config);
 
