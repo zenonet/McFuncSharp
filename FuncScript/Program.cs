@@ -1,12 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.Diagnostics;
 using FuncScript;
-using FuncScript.Internal;
-using FuncSharp;
-using FuncSharp.DataPackGen;
-using SlowLang.Engine;
-using SlowLang.Engine.Statements;
-using SlowLang.Engine.Tokens;
+
 
 
 /*
@@ -42,7 +36,11 @@ Config config = new(
     @"C:\Users\zeno\MultiMC\instances\Funcsharp\.minecraft\saves\FuncSharp LOOOOL\datapacks\first_funcsharp\",
     "first_funcsharp", ReloadBehavior.KillOld);
 
+Stopwatch sw = Stopwatch.StartNew();
 Transpiler.Transpile(script, config);
+sw.Stop();
+
+Console.WriteLine($"Successfully transpiled in {sw.ElapsedMilliseconds}ms");
 
 
 /*LoadEntrypoint loadEntrypoint = new("load", Transpiler.McFunctionBuilder.ToString().CreateCommandArray());
