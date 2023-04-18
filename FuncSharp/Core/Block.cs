@@ -1,4 +1,5 @@
-﻿namespace FuncSharp.Core;
+﻿// ReSharper disable InconsistentNaming
+namespace FuncSharp.Core;
 
 public enum Block
 {
