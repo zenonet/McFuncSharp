@@ -26,13 +26,15 @@ public static class Transpiler
     public static Config Config { get; private set; }
     
     public static Dictionary<string, Type> MemoryTypes = new();
+    
+    public static DataPackGenerator Generator;
 
     public static void Transpile(string funcScriptCode, Config config)
     {
         Config = config;
         
-        DataPackGenerator generator = new DataPackGenerator(config.DataPackPath, config.DataPackNameSpace);
-        
+        Generator = new DataPackGenerator(config.DataPackPath, config.DataPackNameSpace);
+
         McFunctionBuilder = new();
 
         TokenList tokens = Lexer.Lex(funcScriptCode);
@@ -65,14 +67,14 @@ public static class Transpiler
         Statement.ParseMultiple(ref tokens);
 
         // Add the load entrypoint
-        generator.AddEntrypoint(new LoadEntrypoint("load", McFunctionBuilder.ToString().CreateCommandArray()));
+        Generator.AddEntrypoint(new LoadEntrypoint("load", McFunctionBuilder.ToString().CreateCommandArray()));
 
         foreach (Entrypoint entrypoint in AdditionalEntrypoints)
         {
-            generator.AddEntrypoint(entrypoint);
+            Generator.AddEntrypoint(entrypoint);
         }
         
-        generator.Generate();
+        Generator.Generate();
         
         Console.WriteLine("Done!");
     }
