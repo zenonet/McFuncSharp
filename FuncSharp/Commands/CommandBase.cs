@@ -10,7 +10,7 @@ public abstract class CommandBase
 
     protected abstract string GenerateInternal();
 
-    public virtual string Generate()
+    public string Generate()
     {
         if (RunAs == null && RunAt == null)
             return GenerateInternal();
