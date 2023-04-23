@@ -20,7 +20,7 @@ public abstract class CommandBase
         if (RunAt != null)
             execute += $"at {RunAt} ";
 
-        // Completely over engineered shit to allow things like "Say("Amogus").As("<Any string>") to work"
+        // Completely over engineered shit to allow things like "Say("Amogus").As("<Any string>")
         if (RunAs != null)
         {
             if (!RunAs.Contains(' '))
