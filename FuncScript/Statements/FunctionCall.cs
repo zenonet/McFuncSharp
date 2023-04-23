@@ -54,12 +54,12 @@ public class FunctionCall : Statement, IInitializable
             values[i] = (FuncScriptValue) parameters[i].Execute();
         }
 
-        if (Resources.Functions.ContainsKey(name))
+        if (Resources.Functions.TryGetValue(name, out Func<FuncScriptValue[], string>? function))
         {
             // An internal function is being called
             
             // Find the correct function definition and add it
-            Resources.Functions[name](values).Add();
+            function(values).Add();
         }else if (Transpiler.AdditionalEntrypoints.FirstOrDefault(x => x.Name == name) != null)
         {
             // A user defined function is being called
