@@ -57,8 +57,15 @@ public static class Resources
 
                 ReturnValue = entityId;
 
-                return $"summon {parameters[0].Generate()} ~ ~ ~" + " {\"Tags\":[\"" + entityId + "\", \"funcscript_controlled\"]}\n" + // Summon the entity
-                       $"data modify entity @e[tag=funcscript_controlled, tag={entityId}, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}"; // Set the position of the entity
+                // First, we summon a helper marker
+                // Then we can set its position from the variable.
+                // Then we summon the actual entity at the marker's position. This is because some entities can't be moved after they're summoned.
+                // Lastly, we remove the marker.
+
+                return "summon marker ~ ~ ~" + " {\"Tags\":[\"funcscript_helper\", \"funcscript_controlled\"]}\n" + // Summon a helper entity
+                       $"data modify entity @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}\n" + // Set the position of the helper entity
+                       $"execute at @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1] run summon {parameters[0].Generate()} ~ ~ ~" + " {\"Tags\":[\"" + entityId + "\", \"funcscript_controlled\"]}\n" + // Summon the entity at the position of the helper
+                       "kill @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1]\n"; // Remove the helper entity
             }
         },
         {
