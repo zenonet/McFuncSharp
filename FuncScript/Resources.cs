@@ -76,11 +76,11 @@ public static class Resources
                     LoggingManager.LogError($"The setblock function takes two arguments but received {parameters.Length} arguments.");
                 }
 
-                if (parameters[0] is not FuncBlock)
-                    LoggingManager.LogError($"The setblock function takes a block as its first argument but received {parameters[0].GetType().Name}.");
+                if (!parameters[0].IsOfType<FuncBlock>())
+                    LoggingManager.LogError($"The setblock function takes a block as its first argument but received {parameters[0].GetFuncTypeName()}.");
 
-                if (parameters[1] is not VariableNameProvider)
-                    LoggingManager.LogError($"The setblock function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
+                if (!parameters[1].IsOfType<FuncVector>())
+                    LoggingManager.LogError($"The setblock function takes a vector as its second argument but received {parameters[1].GetFuncTypeName()}.");
 
                 // We need to create a temporary entity to set the block at the position of the entity because otherwise it's not possible to set a block at a dynamic position
                 return "summon minecraft:marker ~ ~ ~ {\"Tags\":[\"funcscript_controlled\", \"blockPositioningMarker\"]}\n" + // Summon a temporary marker
@@ -99,12 +99,14 @@ public static class Resources
 
                 for (int i = 0; i < 3; i++)
                 {
-                    if (parameters[i] is not VariableNameProvider)
-                        LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three numbers as arguments but received {parameters[i].GetType().Name}.");
+                    if (!parameters[i].IsOfType<FuncNumber>())
+                        LoggingManager.LogError($"The vector creation function (No, it's not a constructor) takes three numbers as arguments but received {parameters[i].GetFuncTypeName()}.");
                 }
 
 
                 string id = IdManager.GetId();
+
+                Transpiler.MemoryTypes[id] = typeof(FuncVector);
 
                 ReturnValue = id;
 
@@ -120,10 +122,11 @@ public static class Resources
                 if (parameters.Length != 1)
                     LoggingManager.LogError($"The getBlock function takes one argument but received {parameters.Length} arguments.");
 
-                if (parameters[0] is not VariableNameProvider)
+                if (!parameters[0].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The getBlock function takes a vector as its argument but received {parameters[0].GetType().Name}.");
 
                 string id = IdManager.GetId();
+                Transpiler.MemoryTypes[id] = typeof(FuncBlock);
                 ReturnValue = id;
                 return $"data modify storage {MemoryManagement.MemoryTag} variables.{id}.type set value \"block\"\n" +
                        MemoryManagement.MoveVariable(parameters[0].AsVarnameProvider(), $"{id}.pos");
