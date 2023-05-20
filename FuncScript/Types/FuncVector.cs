@@ -1,4 +1,6 @@
-﻿using SlowLang.Engine;
+﻿using System.Text;
+using FuncScript.Internal;
+using SlowLang.Engine;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Tokens;
 using SlowLang.Engine.Values;
@@ -80,4 +82,40 @@ public class FuncVector : FuncScriptValue
         result = null;
         return false;
     }
+    
+    
+
+    public static string VectorAdd(string addend1, string addent2, string output)
+    {
+        StringBuilder cmd = new();
+
+        // Copy the first vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[0]", "ax"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[1]", "ay"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[2]", "az"));
+        
+        // Copy the second vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[0]", "bx"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[1]", "by"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[2]", "bz"));
+        
+        // Add the vector components
+        cmd.AppendLine(Computation.Add("ax", "bx", "outx"));
+        cmd.AppendLine(Computation.Add("ay", "by", "outy"));
+        cmd.AppendLine(Computation.Add("az", "bz", "outz"));
+        
+        // Move the individual components to storage
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz"));
+        
+        // Write the components back into a single vector
+        cmd.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables.{output}");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 0 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.x");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 1 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.y");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 2 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.z");
+
+        return cmd.ToString();
+    }
+
 }
