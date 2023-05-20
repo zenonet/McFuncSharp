@@ -67,7 +67,7 @@ public static class Resources
             }
         },
         {
-            "setblock", parameters =>
+            "setBlock", parameters =>
             {
                 if (parameters.Length != 2)
                 {
