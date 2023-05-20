@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using FuncScript.Internal;
+﻿using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
 
@@ -130,7 +128,65 @@ public static class Resources
                 ReturnValue = id;
                 return $"data modify storage {MemoryManagement.MemoryTag} variables.{id}.type set value \"block\"\n" +
                        MemoryManagement.MoveVariable(parameters[0].AsVarnameProvider(), $"{id}.pos");
+            }
+        },
+        {
+            "addVector", parameters =>
+            {
+                if (parameters.Length != 2)
+                    LoggingManager.LogError($"The addVector function takes 2 argument but received {parameters.Length} arguments.");
 
+                if (!parameters[0].IsOfType<FuncVector>())
+                    LoggingManager.LogError($"The getBlock function takes a vector as its first argument but received {parameters[0].GetType().Name}.");
+                if (!parameters[1].IsOfType<FuncVector>())
+                    LoggingManager.LogError($"The getBlock function takes a vector as its second argument but received {parameters[0].GetType().Name}.");
+
+                string id = IdManager.GetId();
+                Transpiler.MemoryTypes[id] = typeof(FuncVector);
+                ReturnValue = id;
+
+                return FuncVector.VectorAdd(parameters[0].AsVarnameProvider(), parameters[1].AsVarnameProvider(), id);
+            }
+        },
+        {
+            "raycastBlock", parameters =>
+            {
+                if (parameters.Length != 2)
+                    LoggingManager.LogError($"The raycast function takes two arguments but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncVector>())
+                    LoggingManager.LogError("The raycast function takes a vector (the starting position) as its first argument but received " + parameters[0].GetFuncTypeName());
+
+                if (!parameters[0].IsOfType<FuncVector>())
+                    LoggingManager.LogError("The raycast function takes a vector (the ray direction) as its second argument but received " + parameters[1].GetFuncTypeName());
+
+                RaycastingResources.AddRaycastIgnoreBlockTag();
+
+                RaycastingResources.AddRecursiveRaycastFunctions();
+
+                RaycastingResources.AddRaycastHitFunctions();
+
+                string id = IdManager.GetId();
+
+                string absoluteDirId = IdManager.GetId();
+                
+                ReturnValue = id;
+
+                Transpiler.MemoryTypes[id] = typeof(FuncVector);
+
+                return FuncVector.VectorAdd(parameters[0].AsVarnameProvider(), parameters[1].AsVarnameProvider(), absoluteDirId) + "\n" + // Adding the raycast direction to the rays origin to get the position the ray should look at"summon marker ~ ~ ~ {\"Tags\":[\"funcscript_controlled\", \"funcscript_raycastDirection\"]}\n" +
+                       // Summon the ray:
+                       "summon marker ~ ~ ~ {\"Tags\":[\"funcscript_controlled\", \"funcscript_ray\"]}\n" +
+                       $"data modify entity @e[tag=funcscript_ray, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" + // Set the ray start position
+                       // Summon the raycast direction marker:
+                       "summon marker ~ ~ ~ {\"Tags\":[\"funcscript_controlled\", \"funcscript_raycastDirection\"]}\n" +
+                       $"data modify entity @e[tag=funcscript_raycastDirection, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{absoluteDirId}\n" + // Set the raycast direction markers position
+                       // Make the ray look at the raycastDirection marker:
+                       $"execute as @e[tag=funcscript_ray] at @s run tp @s ~ ~ ~ facing entity @e[tag=funcscript_raycastDirection, limit=1] eyes\n" +
+                       // Invoke the recursive function (start the raycasting process)
+                       $"function {Transpiler.Config.DataPackNameSpace}:{RaycastingResources.RecursiveRaycastBlock.Name}\n" +
+                       MemoryManagement.MoveVariable("raycast_hit.hit_position", id) + "\n" +
+                       "kill @e[tag=funcscript_raycastDirection, limit=1]";
             }
         }
     };
