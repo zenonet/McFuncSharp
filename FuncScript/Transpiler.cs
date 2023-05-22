@@ -33,7 +33,7 @@ public static class Transpiler
     {
         Config = config;
         
-        Generator = new DataPackGenerator(config.DataPackPath, config.DataPackNameSpace);
+        Generator = new(config.DataPackPath, config.DataPackNameSpace);
 
         McFunctionBuilder = new();
 
@@ -53,7 +53,7 @@ public static class Transpiler
                 break;
             case ReloadBehavior.DetachOld:
                 // Detach the entities
-                McFunctionBuilder.AppendLine("execute as @e[tag=funcscript_controlled] run tag @s remove funcscript_controlled");
+                McFunctionBuilder.AppendLine("tag @e[tag=funcscript_controlled] remove funcscript_controlled");
                 break;
             case ReloadBehavior.KeepOld:
                 break;
