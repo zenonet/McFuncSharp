@@ -20,25 +20,25 @@ public static class Transpiler
     public static List<string> prefixes = new();
 
     public static string CombinedPrefix => string.Join(string.Empty, prefixes);
-    
+
     public static List<Entrypoint> AdditionalEntrypoints { get; set; } = new();
-    
+
     public static Config Config { get; private set; }
-    
+
     public static Dictionary<string, Type> MemoryTypes = new();
-    
+
     public static DataPackGenerator Generator;
 
     public static void Transpile(string funcScriptCode, Config config)
     {
         Config = config;
-        
+
         Generator = new(config.DataPackPath, config.DataPackNameSpace);
 
         McFunctionBuilder = new();
 
         TokenList tokens = Lexer.Lex(funcScriptCode);
-        
+
         switch (config.ReloadBehavior)
         {
             case ReloadBehavior.KillOld:
@@ -46,10 +46,13 @@ public static class Transpiler
                 McFunctionBuilder.AppendLine("execute as @e[tag=funcscript_controlled] run data merge entity @s {DeathLootTable:\"minecraft:empty\"}");
                 // Kill the entities
                 McFunctionBuilder.AppendLine("kill @e[tag=funcscript_controlled]");
-                
+
                 // Clear the memory
                 McFunctionBuilder.AppendLine("scoreboard players reset @a funcscript_memory");
                 McFunctionBuilder.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables");
+
+                // Clear the entity references created using tags
+                McFunctionBuilder.AppendLine("<removeEntityTagsHere>");
                 break;
             case ReloadBehavior.DetachOld:
                 // Detach the entities
@@ -58,13 +61,21 @@ public static class Transpiler
             case ReloadBehavior.KeepOld:
                 break;
         }
-        
-        Add("kill @e[tag=funcscript_controlled]");
-        Add("scoreboard objectives add funcscript_computation dummy");
+
+        //Add("kill @e[tag=funcscript_controlled]");
+        Add($"scoreboard objectives add {Computation.ComputationScoreboard} dummy");
         Add("data remove storage funcscript_memory { }");
-        
-        
+
+
         Statement.ParseMultiple(ref tokens);
+
+        IEnumerable<string> tagRemovalCommands =
+            from variable in MemoryTypes
+            where variable.Value == typeof(FuncEntity)
+            select $"tag @e[tag={variable.Key}] remove " + variable.Key;
+
+        McFunctionBuilder.Replace("<removeEntityTagsHere>", string.Join("\n", tagRemovalCommands));
+
 
         // Add the load entrypoint
         Generator.AddEntrypoint(new LoadEntrypoint("load", McFunctionBuilder.ToString().CreateCommandArray()));
@@ -73,9 +84,9 @@ public static class Transpiler
         {
             Generator.AddEntrypoint(entrypoint);
         }
-        
+
         Generator.Generate();
-        
+
         Console.WriteLine("Done!");
     }
 
@@ -86,10 +97,10 @@ public static class Transpiler
     {
         McFunctionBuilder.Append(Regex.Replace(line + "\n", @"(.*\w.*)", $"{CombinedPrefix}$1", RegexOptions.Multiline));
     }
-    
+
     public static string AsVarnameProvider(this Value val)
     {
-        if(val is not VariableNameProvider)
+        if (val is not VariableNameProvider)
             LoggingManager.LogError($"Cannot use {val.GetType().Name} as a variable name provider");
         return ((VariableNameProvider) val).VariableName;
     }

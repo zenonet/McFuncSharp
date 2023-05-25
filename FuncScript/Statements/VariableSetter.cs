@@ -53,7 +53,7 @@ public class VariableSetter : Statement, IInitializable
         {
             if (variableName[(variableName.LastIndexOf(".") + 1)..] is "x" or "y" or "z")
             {
-                variableName = variableName[..variableName.LastIndexOf(".")] + (variableName[(variableName.LastIndexOf(".")+1)..] switch
+                variableName = variableName[..variableName.LastIndexOf(".")] + (variableName[(variableName.LastIndexOf(".") + 1)..] switch
                 {
                     "x" => "[0]",
                     "y" => "[1]",
@@ -66,7 +66,7 @@ public class VariableSetter : Statement, IInitializable
                 }
             }
         }
-        
+
         list.Pop(); // Equals
 
         Statement? value = Parse(ref list);
@@ -75,8 +75,19 @@ public class VariableSetter : Statement, IInitializable
         if (value == null)
             return false;
 
-        VariableNameProvider variableNameProvider = ((VariableNameProvider) value.Execute());
-        MemoryManagement.MoveVariable(variableNameProvider.VariableName, variableName).Add();
+        VariableNameProvider variableNameProvider = (VariableNameProvider) value.Execute();
+
+        if (variableNameProvider.IsOfType<FuncEntity>())
+        {
+            // Dereference the old entity
+            $"tag @e[tag={variableName}] remove {variableName}".Add();
+            // Add the new tag to the new entity
+            $"tag @e[tag={variableNameProvider.VariableName}] add {variableName}".Add();
+        }
+        else
+        {
+            MemoryManagement.MoveVariable(variableNameProvider.VariableName, variableName).Add();
+        }
 
         VariableCall.Variables.Add(variableName);
         Transpiler.MemoryTypes[variableName] = Transpiler.MemoryTypes[variableNameProvider.VariableName];
