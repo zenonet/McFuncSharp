@@ -45,10 +45,10 @@ public static class Resources
                     LoggingManager.LogError($"The summon function takes two arguments but received {parameters.Length} arguments.");
                 }
 
-                if (parameters[0] is not FuncEntity)
+                if (!parameters[0].IsOfType<FuncEntityType>())
                     LoggingManager.LogError($"The summon function takes an entity as its first argument but received {parameters[0].GetType().Name}.");
 
-                if (parameters[1] is not VariableNameProvider)
+                if (!parameters[1].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The summon function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
 
                 string entityId = IdManager.GetId();
