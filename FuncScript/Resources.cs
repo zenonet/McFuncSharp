@@ -237,6 +237,18 @@ public static class Resources
                     "kill @e[tag=funcscript_ray, limit=1]\n" +
                     "kill @e[tag=funcscript_raycastDirection, limit=1]";
             }
+        },
+        {
+            "glow", parameters =>
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The glow function takes 1 argument but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncEntity>())
+                    LoggingManager.LogError("The glow function takes an entity as its argument but received " + parameters[1].GetFuncTypeName());
+
+                return $"effect give @e[tag={parameters[0].AsVarnameProvider()}] minecraft:glowing 3 255 true";
+            }
         }
     };
 }
