@@ -117,5 +117,104 @@ public class FuncVector : FuncScriptValue
 
         return cmd.ToString();
     }
+    
+    public static string VectorSubtract(string minuend, string subtrahend, string output)
+    {
+        StringBuilder cmd = new();
+
+        // Copy the first vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{minuend}[0]", "ax"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{minuend}[1]", "ay"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{minuend}[2]", "az"));
+        
+        // Copy the second vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{subtrahend}[0]", "bx"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{subtrahend}[1]", "by"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{subtrahend}[2]", "bz"));
+        
+        // Subtract the vector components
+        cmd.AppendLine(Computation.Subtract("ax", "bx", "outx"));
+        cmd.AppendLine(Computation.Subtract("ay", "by", "outy"));
+        cmd.AppendLine(Computation.Subtract("az", "bz", "outz"));
+        
+        // Move the individual components to storage
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz"));
+        
+        // Write the components back into a single vector
+        cmd.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables.{output}");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 0 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.x");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 1 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.y");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 2 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.z");
+
+        return cmd.ToString();
+    }
+    
+    public static string VectorMultiply(string factor1, string factor2, string output)
+    {
+        StringBuilder cmd = new();
+
+        // Copy the first vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor1}[0]", "ax"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor1}[1]", "ay"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor1}[2]", "az"));
+        
+        // Copy the second vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor2}[0]", "bx"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor2}[1]", "by"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{factor2}[2]", "bz"));
+        
+        // Multiply the vector components
+        cmd.AppendLine(Computation.Multiply("ax", "bx", "outx"));
+        cmd.AppendLine(Computation.Multiply("ay", "by", "outy"));
+        cmd.AppendLine(Computation.Multiply("az", "bz", "outz"));
+        
+        // Move the individual components to storage
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz"));
+        
+        // Write the components back into a single vector
+        cmd.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables.{output}");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 0 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.x");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 1 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.y");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 2 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.z");
+
+        return cmd.ToString();
+    }
+    
+    public static string VectorDivide(string dividend, string divisor, string output)
+    {
+        StringBuilder cmd = new();
+
+        // Copy the first vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{dividend}[0]", "ax"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{dividend}[1]", "ay"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{dividend}[2]", "az"));
+        
+        // Copy the second vector to the scoreboard
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{divisor}[0]", "bx"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{divisor}[1]", "by"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{divisor}[2]", "bz"));
+        
+        // Divide the vector components
+        cmd.AppendLine(Computation.Divide("ax", "bx", "outx"));
+        cmd.AppendLine(Computation.Divide("ay", "by", "outy"));
+        cmd.AppendLine(Computation.Divide("az", "bz", "outz"));
+        
+        // Move the individual components to storage
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz"));
+        
+        // Write the components back into a single vector
+        cmd.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables.{output}");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 0 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.x");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 1 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.y");
+        cmd.AppendLine($"data modify storage {MemoryManagement.MemoryTag} variables.{output} insert 2 from storage {MemoryManagement.MemoryTag} variables.vectorcopy.z");
+
+        return cmd.ToString();
+    }
 
 }
