@@ -38,28 +38,44 @@ public class MathematicOperator : Statement, IInitializable
 
         Statement right = Parse(ref list)!;
 
-        // Move data to the computation scoreboard
-        MemoryManagement.MoveToComputationScoreboard(((VariableNameProvider) left.Execute()).VariableName, "a").Add();
-        MemoryManagement.MoveToComputationScoreboard(((VariableNameProvider) right.Execute()).VariableName, "b").Add();
-
-        // Execute operation and save the result in c on the computation scoreboard
-        (operation switch
-        {
-            TokenType.Plus => Computation.Add("a", "b", "c"),
-            TokenType.Minus => Computation.Subtract("a", "b", "c"),
-            TokenType.Multiply => Computation.Multiply("a", "b", "c"),
-            TokenType.Divide => Computation.Divide("a", "b", "c"),
-        }).Add();
+        FuncScriptValue leftValue = (FuncScriptValue) left.Execute();
+        FuncScriptValue rightValue = (FuncScriptValue) right.Execute();
 
         // Get a name for the result variable
         string variableName = IdManager.GetId();
-
-        // Move result to the variable scoreboard
-        MemoryManagement.MoveToStorage(variableName, "c").Add();
-
-        Transpiler.MemoryTypes.Add(variableName, typeof(FuncNumber));
         // Create a variable name provider for the result
         _variableNameProvider = new(variableName);
+
+        if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>())
+        {
+            // Move data to the computation scoreboard
+            MemoryManagement.MoveToComputationScoreboard(((VariableNameProvider) leftValue).VariableName, "a").Add();
+            MemoryManagement.MoveToComputationScoreboard(((VariableNameProvider) rightValue).VariableName, "b").Add();
+
+            // Execute operation and save the result in c on the computation scoreboard
+            (operation switch
+            {
+                TokenType.Plus => Computation.Add("a", "b", "c"),
+                TokenType.Minus => Computation.Subtract("a", "b", "c"),
+                TokenType.Multiply => Computation.Multiply("a", "b", "c"),
+                TokenType.Divide => Computation.Divide("a", "b", "c"),
+            }).Add();
+
+            // Move result to the variable scoreboard
+            MemoryManagement.MoveToStorage(variableName, "c").Add();
+            Transpiler.MemoryTypes.Add(variableName, typeof(FuncNumber));
+        }
+        else if (leftValue.IsOfType<FuncVector>() && rightValue.IsOfType<FuncVector>())
+        {
+            // Execute operation and save the result
+            (operation switch
+            {
+                TokenType.Plus => FuncVector.VectorAdd(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
+                TokenType.Minus => FuncVector.VectorSubtract(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
+                TokenType.Multiply => FuncVector.VectorMultiply(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
+                TokenType.Divide => FuncVector.VectorDivide(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
+            }).Add();
+        }
 
         // Remove closing brace
         list.Pop();
