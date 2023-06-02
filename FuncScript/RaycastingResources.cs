@@ -94,8 +94,8 @@ public static class RaycastingResources
         // Move the ray forward
         $"execute as @e[type=marker, tag=funcscript_ray] at @s run tp @s ^ ^ ^{StringRaycastAccuracy}\n" +
         // If the raycast hit a block, run the raycast hit block function
-        $"execute at @e[type=marker, tag=funcscript_ray] unless block ~ ~ ~ #minecraft:funcscript_raycast_ignore " +
-        $"run function {Transpiler.Config.DataPackNameSpace}:raycast_hit_block\n" +
+        $"execute as @e[type=marker, tag=funcscript_ray] at @s unless block ~ ~ ~ #minecraft:funcscript_raycast_ignore " +
+        $"run data modify storage {MemoryManagement.MemoryTag} variables.raycast_hit.hit_position set from entity @s Pos\n" +
         // Potentially create particles to visualize the ray
         (VisualizeRaycasts ? "execute at @e[tag=funcscript_ray] run particle minecraft:enchanted_hit ~0.5 ~ ~0.5 0 0 0 0 10\n" : "") +
         // Recursively call the function again

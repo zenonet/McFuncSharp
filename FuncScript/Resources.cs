@@ -181,6 +181,8 @@ public static class Resources
                        $"data modify entity @e[tag=funcscript_raycastDirection, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{absoluteDirId}\n" + // Set the raycast direction markers position
                        // Make the ray look at the raycastDirection marker:
                        $"execute as @e[tag=funcscript_ray] at @s run tp @s ~ ~ ~ facing entity @e[tag=funcscript_raycastDirection, limit=1] eyes\n" +
+                       // Reset the iterations counter
+                       "scoreboard players reset iterations funcscript_computation\n" +
                        // Invoke the recursive function (start the raycasting process)
                        $"function {Transpiler.Config.DataPackNameSpace}:{RaycastingResources.RecursiveRaycastBlock.Name}\n" +
                        MemoryManagement.MoveVariable("raycast_hit.hit_position", id) + "\n" +
