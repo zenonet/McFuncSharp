@@ -52,6 +52,7 @@ public static class Resources
                     LoggingManager.LogError($"The summon function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
 
                 string entityId = IdManager.GetId();
+                Transpiler.MemoryTypes[entityId] = typeof(FuncEntity);
 
                 ReturnValue = entityId;
 
