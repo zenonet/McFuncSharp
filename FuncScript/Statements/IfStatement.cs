@@ -42,7 +42,6 @@ public class IfStatement : Statement, IInitializable
             throw new NotImplementedException("Const values as the condition of an if statement is not yet implemented");
         }
         else
-            // TODO: Allow for block and entity comparisons
             prefixForAllBodyStatements = $"execute if data storage {MemoryManagement.MemoryTag} {{variables:{{{value.AsVarnameProvider()}:1}}}} run ";
 
 
@@ -80,7 +79,7 @@ public class IfStatement : Statement, IInitializable
             return true;
 
 
-        // Parse else block
+        #region Else Block Parsing
 
         // Remove the else keyword
         list.Pop();
@@ -111,6 +110,9 @@ public class IfStatement : Statement, IInitializable
 
         // Remove the prefix
         Transpiler.prefixes.Remove(prefixForAllBodyStatements);
+
+        #endregion
+
 
         return true;
     }
