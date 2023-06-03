@@ -60,7 +60,7 @@ public class EqualityOperator : Statement, IInitializable
         }).Add();
 
         // Get a name for the result variable
-        string variableName = IdManager.GetId();
+        string variableName = IdManager.GetDataId();
 
         // Move result to the variable scoreboard
         MemoryManagement.MoveToStorage(variableName, "c").Add();

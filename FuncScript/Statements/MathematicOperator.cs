@@ -42,7 +42,7 @@ public class MathematicOperator : Statement, IInitializable
         FuncScriptValue rightValue = (FuncScriptValue) right.Execute();
 
         // Get a name for the result variable
-        string variableName = IdManager.GetId();
+        string variableName = IdManager.GetDataId();
         // Create a variable name provider for the result
         _variableNameProvider = new(variableName);
 

@@ -52,7 +52,7 @@ public class ValueCall : Statement, IInitializable
             return true;
         }
 
-        Id = IdManager.GetId();
+        Id = IdManager.GetDataId();
 
         MemoryManagement.SetVariable(Id, ((FuncScriptValue)value).Generate()).Add();
 

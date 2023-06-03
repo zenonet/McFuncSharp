@@ -51,7 +51,7 @@ public static class Resources
                 if (!parameters[1].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The summon function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
 
-                string entityId = IdManager.GetId();
+                string entityId = IdManager.GetEntityId();
                 Transpiler.MemoryTypes[entityId] = typeof(FuncEntity);
 
                 ReturnValue = entityId;
@@ -103,7 +103,7 @@ public static class Resources
                 }
 
 
-                string id = IdManager.GetId();
+                string id = IdManager.GetDataId();
 
                 Transpiler.MemoryTypes[id] = typeof(FuncVector);
 
@@ -124,7 +124,7 @@ public static class Resources
                 if (!parameters[0].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The getBlock function takes a vector as its argument but received {parameters[0].GetType().Name}.");
 
-                string id = IdManager.GetId();
+                string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncBlock);
                 ReturnValue = id;
                 return $"data modify storage {MemoryManagement.MemoryTag} variables.{id}.type set value \"block\"\n" +
@@ -142,7 +142,7 @@ public static class Resources
                 if (!parameters[1].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The getBlock function takes a vector as its second argument but received {parameters[0].GetType().Name}.");
 
-                string id = IdManager.GetId();
+                string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncVector);
                 ReturnValue = id;
 
@@ -165,9 +165,9 @@ public static class Resources
 
                 RaycastingResources.AddRecursiveRaycastFunctions();
 
-                string id = IdManager.GetId();
+                string id = IdManager.GetDataId();
 
-                string absoluteDirId = IdManager.GetId();
+                string absoluteDirId = IdManager.GetDataId();
 
                 ReturnValue = id;
 
@@ -207,9 +207,9 @@ public static class Resources
 
                 RaycastingResources.AddRecursiveRaycastFunctions();
 
-                string id = IdManager.GetId();
+                string id = IdManager.GetEntityId();
 
-                string absoluteDirId = IdManager.GetId();
+                string absoluteDirId = IdManager.GetDataId();
 
                 ReturnValue = id;
 
