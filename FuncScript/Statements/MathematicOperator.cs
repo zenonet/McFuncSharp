@@ -75,12 +75,46 @@ public class MathematicOperator : Statement, IInitializable
                 TokenType.Multiply => FuncVector.VectorMultiply(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
                 TokenType.Divide => FuncVector.VectorDivide(leftValue.AsVarnameProvider(), rightValue.AsVarnameProvider(), variableName),
             }).Add();
+
+            Transpiler.MemoryTypes.Add(variableName, typeof(FuncVector));
+        }
+        else if (leftValue.IsOfType<FuncVector>() && rightValue.IsOfType<FuncNumber>() || leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncVector>())
+        {
+            FuncScriptValue number = leftValue.IsOfType<FuncNumber>() ? leftValue : rightValue;
+            FuncScriptValue vector = leftValue.IsOfType<FuncVector>() ? leftValue : rightValue;
+
+            Transpiler.MemoryTypes.Add(variableName, typeof(FuncVector));
+
+            if (operation is TokenType.Multiply)
+            {
+                MulitplyVectorWithNumber(vector.AsVarnameProvider(), number.AsVarnameProvider(), variableName).Add();
+            }
+            else
+            {
+                LoggingManager.LogError($"Unable to apply the operation {operation} to a vector and a number");
+            }
+        }
+        else
+        {
+            LoggingManager.LogError($"Unable to apply the {operation} operator to {leftValue.GetFuncTypeName()} and {rightValue.GetFuncTypeName()}");
         }
 
         // Remove closing brace
         list.Pop();
 
         return true;
+    }
+
+    private string MulitplyVectorWithNumber(string vector, string number, string variableName)
+    {
+        return
+            // Create a vector with the number in all components
+            $"data remove storage {MemoryManagement.MemoryTag} variables.vectorized_number\n" +
+            $"data modify storage {MemoryManagement.MemoryTag} variables.vectorized_number insert 0 from storage {MemoryManagement.MemoryTag} variables.{number}\n" +
+            $"data modify storage {MemoryManagement.MemoryTag} variables.vectorized_number insert 1 from storage {MemoryManagement.MemoryTag} variables.{number}\n" +
+            $"data modify storage {MemoryManagement.MemoryTag} variables.vectorized_number insert 2 from storage {MemoryManagement.MemoryTag} variables.{number}\n" +
+            // Multiply the 2 vectors
+            FuncVector.VectorMultiply(vector, "vectorized_number", variableName);
     }
 
     public override Value Execute()
