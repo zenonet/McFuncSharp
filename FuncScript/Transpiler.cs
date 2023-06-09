@@ -98,6 +98,27 @@ public static class Transpiler
         McFunctionBuilder.Append(Regex.Replace(line + "\n", @"(.*\w.*)", $"{CombinedPrefix}$1", RegexOptions.Multiline));
     }
 
+    /// <summary>
+    /// Extracts the code generated while executing the given action
+    /// </summary>
+    /// <param name="codeGeneration">Any code generated in here is captured</param>
+    /// <returns>A string of the captured code</returns>
+    public static string YoinkGeneratedCode(Action codeGeneration)
+    {
+        // Buffer the main string builder
+        StringBuilder bufferedStringBuilder = Transpiler.McFunctionBuilder;
+        // Create a new string builder for the function
+        Transpiler.McFunctionBuilder = new();
+        // Parse stuff
+        codeGeneration();
+        // Get the function string builder
+        string yoinkedCode = Transpiler.McFunctionBuilder.ToString();
+        // Restore the main string builder
+        Transpiler.McFunctionBuilder = bufferedStringBuilder;
+
+        return yoinkedCode;
+    }
+
     public static string AsVarnameProvider(this Value val)
     {
         if (val is not VariableNameProvider)
