@@ -14,7 +14,7 @@ public class EqualityOperator : Statement, IInitializable
     
     public static void Initialize()
     {
-        StatementRegistration.Create<EqualityOperator>(TokenType.OpeningBrace).Register();
+        StatementRegistration.Create<EqualityOperator>(TokenType.OpeningBrace).AddPriority(2).Register();
     }
 
     protected override bool CutTokensManually() => true;
@@ -63,7 +63,7 @@ public class EqualityOperator : Statement, IInitializable
         string variableName = IdManager.GetDataId();
 
         // Move result to the variable scoreboard
-        MemoryManagement.MoveToStorage(variableName, "c").Add();
+        MemoryManagement.MoveToStorage(variableName, "c", "byte").Add();
 
 
         // Create a variable name provider for the result
