@@ -14,6 +14,8 @@ public class Config
     public string DataPackPath { get; set; }
     
     public string DataPackNameSpace { get; set; }
+    
+    public bool Optimize { get; set; } = false;
 }
 
 /// <summary>
