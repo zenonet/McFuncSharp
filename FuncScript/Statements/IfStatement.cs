@@ -42,7 +42,7 @@ public class IfStatement : Statement, IInitializable
             throw new NotImplementedException("Const values as the condition of an if statement is not yet implemented");
         }
         else
-            prefixForAllBodyStatements = $"execute if data storage {MemoryManagement.MemoryTag} {{variables:{{{value.AsVarnameProvider()}:1}}}} run ";
+            prefixForAllBodyStatements = $"execute if data storage {MemoryManagement.MemoryTag} {{variables:{{{value.AsVarnameProvider()}:1b}}}} run ";
 
 
         // Remove the closing brace
