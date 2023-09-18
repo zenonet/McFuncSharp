@@ -62,7 +62,6 @@ public static class Transpiler
                 break;
         }
 
-        //Add("kill @e[tag=funcscript_controlled]");
         Add($"scoreboard objectives add {Computation.ComputationScoreboard} dummy");
         Add("data remove storage funcscript_memory { }");
 
