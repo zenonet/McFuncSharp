@@ -65,7 +65,7 @@ public static class Transpiler
         Add($"scoreboard objectives add {Computation.ComputationScoreboard} dummy");
         Add("data remove storage funcscript_memory { }");
 
-
+        Console.WriteLine("Transpiling...");
         Statement.ParseMultiple(ref tokens);
 
         IEnumerable<string> tagRemovalCommands =
@@ -84,6 +84,7 @@ public static class Transpiler
             Generator.AddEntrypoint(entrypoint);
         }
 
+        Console.WriteLine("Generating Data Pack...");
         Generator.Generate();
 
         Console.WriteLine("Done!");
