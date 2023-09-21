@@ -21,7 +21,7 @@ public class EqualityOperator : Statement, IInitializable
 
     private VariableNameProvider _variableNameProvider;
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         // Remove "op" keyword
         //list.Pop();

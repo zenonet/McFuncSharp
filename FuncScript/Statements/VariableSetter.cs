@@ -36,7 +36,7 @@ public class VariableSetter : Statement, IInitializable
 
     protected override bool CutTokensManually() => true;
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         variableName = list.Pop().RawContent;
 

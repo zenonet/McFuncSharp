@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using FuncScript.Internal;
 using SlowLang.Engine;
 using SlowLang.Engine.Statements;
@@ -12,7 +14,7 @@ public class FuncVector : FuncScriptValue
     public FuncSharp.Core.Vector Value { get; set; }
 
     [FuncPropertyList]
-    public static Dictionary<string, Type> Properties { get; }= new Dictionary<string, Type>()
+    public static Dictionary<string, Type> Properties { get; }= new()
     {
         {"x", typeof(FuncNumber)},
         {"y", typeof(FuncNumber)},

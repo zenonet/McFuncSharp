@@ -1,4 +1,5 @@
-﻿using FuncScript.Types;
+﻿using System.Collections.Generic;
+using FuncScript.Types;
 using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Statements.StatementRegistrations;
@@ -29,7 +30,7 @@ public class VariableCall : Statement, IInitializable
     }
 
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         VariableName = list.Pop().RawContent;
 

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
@@ -22,7 +23,7 @@ public class IfStatement : Statement, IInitializable
         return true;
     }
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         // Remove the if keyword
         list.Pop();

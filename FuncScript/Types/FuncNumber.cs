@@ -39,4 +39,9 @@ public class FuncNumber : FuncScriptValue
     {
         return $"{Value}d";
     }
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }

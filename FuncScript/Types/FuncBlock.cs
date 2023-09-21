@@ -1,4 +1,5 @@
-﻿using FuncSharp.Core;
+﻿using System;
+using FuncSharp.Core;
 using SlowLang.Engine;
 using SlowLang.Engine.Tokens;
 

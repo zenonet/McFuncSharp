@@ -1,4 +1,7 @@
-﻿using FuncScript.Types;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FuncScript.Types;
 using Microsoft.Extensions.Logging;
 using SlowLang.Engine;
 using SlowLang.Engine.Initialization;
@@ -20,7 +23,7 @@ public class FunctionCall : Statement, IInitializable
 
     private string returnValue;
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         string name = list.Pop().RawContent;
 

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using FuncSharp.Core;
 using SlowLang.Engine;
 using SlowLang.Engine.Tokens;

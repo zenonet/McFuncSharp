@@ -35,7 +35,7 @@ public class ValueCall : Statement, IInitializable
     
     public Value ConstantValue { get; private set; }
     
-    protected override bool OnParse(ref TokenList tokenList)
+    public override bool OnParse(ref TokenList tokenList)
     {
         value = Value.Parse(ref tokenList) as FuncScriptValue;
 
@@ -67,5 +67,10 @@ public class ValueCall : Statement, IInitializable
         
         // Return the name of the Variable the value is stored in
         return new VariableNameProvider(Id);
+    }
+    
+    public override string ToString()
+    {
+        return value?.ToString() ?? "null";
     }
 }

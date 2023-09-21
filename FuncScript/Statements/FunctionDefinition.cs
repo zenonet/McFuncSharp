@@ -21,7 +21,7 @@ public class FunctionDefinition : Statement, IInitializable
         return true;
     }
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         list.Pop(); // func keyword
 

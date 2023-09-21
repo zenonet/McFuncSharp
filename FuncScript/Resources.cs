@@ -1,4 +1,6 @@
-﻿using FuncScript.Internal;
+﻿using System;
+using System.Collections.Generic;
+using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
 

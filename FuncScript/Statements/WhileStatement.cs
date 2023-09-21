@@ -1,4 +1,5 @@
-﻿using FuncScript.Internal;
+﻿using System;
+using FuncScript.Internal;
 using FuncScript.Types;
 using FuncSharp;
 using SlowLang.Engine;
@@ -22,7 +23,7 @@ public class WhileStatement : Statement, IInitializable
         return true;
     }
 
-    protected override bool OnParse(ref TokenList list)
+    public override bool OnParse(ref TokenList list)
     {
         // Remove the if keyword
         list.Pop();
