@@ -29,9 +29,9 @@ public static class MemoryManagement
         return "execute store result score " + nameOnScoreboard + " " + Computation.ComputationScoreboard + " run data get storage " + MemoryTag + " variables." + variableName;
     }
 
-    public static string MoveToStorage(string variableName, string nameOnScoreboard, string dataType = "double")
+    public static string MoveToStorage(string variableName, string nameOnScoreboard, string dataType = "double", float scale = 1)
     {
-        return "execute store result storage " + MemoryTag + " variables." + variableName + $" {dataType} 1 run scoreboard players get " + nameOnScoreboard + " " + Computation.ComputationScoreboard;
+        return "execute store result storage " + MemoryTag + " variables." + variableName + $" {dataType} {scale.ToString("0." + new string('#', 339)).Replace(',', '.')} run scoreboard players get " + nameOnScoreboard + " " + Computation.ComputationScoreboard;
     }
 
 
