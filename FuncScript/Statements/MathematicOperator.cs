@@ -132,25 +132,25 @@ public class MathematicOperator : StatementExtension, IInitializable
     {
         public readonly Statement LeftSide;
         public readonly TokenType Operation;
-        public readonly Statement ReftSide;
+        public readonly Statement RightSide;
         private readonly string variableName;
 
-        public ExpressionCompound(Statement leftSide, Statement reftSide, TokenType operation)
+        public ExpressionCompound(Statement leftSide, Statement rightSide, TokenType operation)
         {
             LeftSide = leftSide;
-            ReftSide = reftSide;
+            RightSide = rightSide;
             Operation = operation;
             variableName = IdManager.GetDataId();
         }
 
-        public override string ToString() => $"({LeftSide} {Operation} {ReftSide})";
+        public override string ToString() => $"({LeftSide} {Operation} {RightSide})";
 
         public override Value Execute()
         {
             // This is an exception to the idea, that Statements should add their generated mcfunction code 
             
             FuncScriptValue leftValue = (FuncScriptValue) LeftSide.Execute();
-            FuncScriptValue rightValue = (FuncScriptValue) ReftSide.Execute();
+            FuncScriptValue rightValue = (FuncScriptValue) RightSide.Execute();
             if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>())
             {
                 // Move data to the computation scoreboard
