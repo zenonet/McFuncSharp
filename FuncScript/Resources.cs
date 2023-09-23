@@ -271,17 +271,61 @@ public static class Resources
                 Transpiler.MemoryTypes[id] = typeof(FuncNumber);
                 ReturnValue = id;
 
-                return 
-                    MemoryManagement.MoveToComputationScoreboard(parameters[0].AsVarnameProvider() + " -1000000", "dtf") + "\n" +
-                    MemoryManagement.MoveToStorage("sin_input", "dtf", "float", 0.000001f) + "\n" +
-                    "summon marker ~ ~ ~ {Tags:[\"funcscript_controlled\", \"funcscript_sin_calc\"]}\n" +
-                    $"data modify entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0] set from storage {MemoryManagement.MemoryTag} variables.sin_input\n" +
-                    "execute as @e[tag=funcscript_sin_calc] at @s run tp @s ^ ^ ^1\n" +
-                    $"data modify storage {MemoryManagement.MemoryTag} variables.{id} set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[0]\n"; // Pos[2] is cos now
-
+                return
+                    CalculateSinAndCos(parameters[0].AsVarnameProvider()) +
+                    $"data modify storage {MemoryManagement.MemoryTag} variables.{id} set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[0]\n";
             }
-        }
+        },
+        {
+            "cos", parameters =>
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The sin function takes 1 argument but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncNumber>())
+                    LoggingManager.LogError("The sin function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
+                
+                string id = IdManager.GetDataId();
+                Transpiler.MemoryTypes[id] = typeof(FuncNumber);
+                ReturnValue = id;
+
+                return
+                    CalculateSinAndCos(parameters[0].AsVarnameProvider()) +
+                    $"data modify storage {MemoryManagement.MemoryTag} variables.{id} set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[2]\n";
+            }
+        },
+        {
+            "tan", parameters =>
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The sin function takes 1 argument but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncNumber>())
+                    LoggingManager.LogError("The sin function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
+                
+                string id = IdManager.GetDataId();
+                Transpiler.MemoryTypes[id] = typeof(FuncNumber);
+                ReturnValue = id;
+
+                return
+                    CalculateSinAndCos(parameters[0].AsVarnameProvider()) +
+                    $"data modify storage {MemoryManagement.MemoryTag} variables.sin_for_tan set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[0]\n" +
+                    $"data modify storage {MemoryManagement.MemoryTag} variables.cos_for_tan set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[2]\n" +
+                    MemoryManagement.MoveToComputationScoreboard("sin_for_tan 1000000", "a") + "\n" +
+                    MemoryManagement.MoveToComputationScoreboard("cos_for_tan 1000", "b") + "\n" +
+                    Computation.Divide("a", "b", "c") + "\n" +
+                    MemoryManagement.MoveToStorage(id, "c", scale:0.001f) + "\n";
+                    
+            }
+        },
+        
 
         #endregion
     };
+    
+    private static string CalculateSinAndCos(string inputVariable) => MemoryManagement.MoveToComputationScoreboard(inputVariable + " -1000000", "dtf") + "\n" +
+                                                        MemoryManagement.MoveToStorage("sin_input", "dtf", "float", 0.000001f) + "\n" +
+                                                        "summon marker ~ ~ ~ {Tags:[\"funcscript_controlled\", \"funcscript_sin_calc\"]}\n" +
+                                                        $"data modify entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0] set from storage {MemoryManagement.MemoryTag} variables.sin_input\n" +
+                                                        "execute as @e[tag=funcscript_sin_calc] at @s run tp @s ^ ^ ^1\n";
 }
