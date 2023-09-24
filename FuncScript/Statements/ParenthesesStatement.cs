@@ -22,7 +22,7 @@ public class ParenthesesStatement : Statement, IInitializable
     public override bool OnParse(ref TokenList list)
     {
         list.Pop();
-        TokenList? innerList = list.FindBetweenBraces(TokenType.OpeningParenthesis, TokenType.OpeningParenthesis, Logger);
+        TokenList? innerList = list.FindBetweenBraces(TokenType.OpeningParenthesis, TokenType.ClosingParenthesis, Logger);
         if (innerList == null)
             return false;
 
@@ -35,7 +35,7 @@ public class ParenthesesStatement : Statement, IInitializable
         variableNameProvider = (VariableNameProvider) statement.Execute();
 
         
-        if(!list.StartsWith(TokenType.OpeningParenthesis))
+        if(!list.StartsWith(TokenType.ClosingParenthesis))
             LoggingManager.LogError("Expected closing brace after statement in parentheses");
         
         list.Pop();
