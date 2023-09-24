@@ -15,7 +15,7 @@ public class IfStatement : Statement, IInitializable
 {
     public static void Initialize()
     {
-        StatementRegistration.Create<IfStatement>(list => list.Peek().RawContent == "if", TokenType.Keyword, TokenType.OpeningBrace).Register();
+        StatementRegistration.Create<IfStatement>(list => list.Peek().RawContent == "if", TokenType.Keyword, TokenType.OpeningParenthesis).Register();
     }
 
     protected override bool CutTokensManually()
@@ -47,18 +47,18 @@ public class IfStatement : Statement, IInitializable
 
 
         // Remove the closing brace
-        if (!list.StartsWith(TokenType.ClosingBrace))
+        if (!list.StartsWith(TokenType.ClosingParenthesis))
             LoggingManager.LogError("Expected closing brace after if statement condition");
 
         list.Pop();
 
-        if (!list.StartsWith(TokenType.OpeningCurlyBrace))
+        if (!list.StartsWith(TokenType.OpeningCurlyBracket))
             LoggingManager.LogError("Expected opening curly brace after if statement condition");
 
         list.Pop();
 
         // Parse the body
-        TokenList? bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBrace, TokenType.ClosingCurlyBrace, Logger);
+        TokenList? bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBracket, TokenType.ClosingCurlyBracket, Logger);
 
         if (bodyTokenList == null)
             LoggingManager.LogError("Invalid body after if statement condition");
@@ -85,12 +85,12 @@ public class IfStatement : Statement, IInitializable
         // Remove the else keyword
         list.Pop();
 
-        if (!list.StartsWith(TokenType.OpeningCurlyBrace))
+        if (!list.StartsWith(TokenType.OpeningCurlyBracket))
             LoggingManager.LogError("Expected opening curly brace after else keyword");
         list.Pop();
 
         // Parse the body
-        bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBrace, TokenType.ClosingCurlyBrace, Logger);
+        bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBracket, TokenType.ClosingCurlyBracket, Logger);
 
         if (bodyTokenList == null)
             LoggingManager.LogError("Invalid body after else keyword");

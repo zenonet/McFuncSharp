@@ -13,7 +13,7 @@ public class FunctionDefinition : Statement, IInitializable
 {
     public static void Initialize()
     {
-        StatementRegistration.Create<FunctionDefinition>(TokenType.Keyword, TokenType.Keyword, TokenType.OpeningBrace).AddCustomParser(list => { return list.Peek().RawContent is "func" or "function"; }).AddPriority(1).Register();
+        StatementRegistration.Create<FunctionDefinition>(TokenType.Keyword, TokenType.Keyword, TokenType.OpeningParenthesis).AddCustomParser(list => list.Peek().RawContent is "func" or "function").AddPriority(1).Register();
     }
 
     protected override bool CutTokensManually()
@@ -29,7 +29,7 @@ public class FunctionDefinition : Statement, IInitializable
 
         list.Pop(); // opening brace
 
-        TokenList? rawParameters = list.FindBetweenBraces(TokenType.OpeningBrace, TokenType.ClosingBrace, Logger);
+        TokenList? rawParameters = list.FindBetweenBraces(TokenType.OpeningParenthesis, TokenType.ClosingParenthesis, Logger);
 
         if (rawParameters is null)
         {
@@ -41,12 +41,12 @@ public class FunctionDefinition : Statement, IInitializable
 
         // TODO: Implement parameter parsing here
 
-        if (list.Pop().Type != TokenType.OpeningCurlyBrace)
+        if (list.Pop().Type != TokenType.OpeningCurlyBracket)
         {
             LoggingManager.LogError($"Expected function body after parameter declaration of function {name}");
         }
 
-        TokenList? rawBody = list.FindBetweenBraces(TokenType.OpeningCurlyBrace, TokenType.ClosingCurlyBrace, Logger);
+        TokenList? rawBody = list.FindBetweenBraces(TokenType.OpeningCurlyBracket, TokenType.ClosingCurlyBracket, Logger);
 
         if (rawBody is null)
         {

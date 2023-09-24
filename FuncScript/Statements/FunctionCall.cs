@@ -16,7 +16,7 @@ public class FunctionCall : Statement, IInitializable
 {
     public static void Initialize()
     {
-        Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.OpeningBrace));
+        Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.OpeningParenthesis));
     }
 
     protected override bool CutTokensManually() => true;
@@ -30,7 +30,7 @@ public class FunctionCall : Statement, IInitializable
         // Remove the opening brace
         list.Pop();
 
-        TokenList? betweenBraces = list.FindBetweenBraces(TokenType.OpeningBrace, TokenType.ClosingBrace, LoggingManager.ErrorLogger);
+        TokenList? betweenBraces = list.FindBetweenBraces(TokenType.OpeningParenthesis, TokenType.ClosingParenthesis, LoggingManager.ErrorLogger);
 
         if (betweenBraces == null)
             return false;

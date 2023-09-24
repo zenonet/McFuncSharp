@@ -1,5 +1,4 @@
-﻿using System;
-using FuncScript.Internal;
+﻿using FuncScript.Internal;
 using FuncScript.Types;
 using FuncSharp;
 using SlowLang.Engine;
@@ -15,7 +14,7 @@ public class WhileStatement : Statement, IInitializable
 {
     public static void Initialize()
     {
-        StatementRegistration.Create<WhileStatement>(list => list.Peek().RawContent == "while", TokenType.Keyword, TokenType.OpeningBrace).Register();
+        StatementRegistration.Create<WhileStatement>(list => list.Peek().RawContent == "while", TokenType.Keyword, TokenType.OpeningParenthesis).Register();
     }
 
     protected override bool CutTokensManually()
@@ -55,18 +54,18 @@ public class WhileStatement : Statement, IInitializable
 
 
         // Remove the closing brace
-        if (!list.StartsWith(TokenType.ClosingBrace))
+        if (!list.StartsWith(TokenType.ClosingParenthesis))
             LoggingManager.LogError("Expected closing brace after while statement condition");
 
         list.Pop();
 
-        if (!list.StartsWith(TokenType.OpeningCurlyBrace))
+        if (!list.StartsWith(TokenType.OpeningCurlyBracket))
             LoggingManager.LogError("Expected opening curly brace after while statement condition");
 
         list.Pop();
 
         // Parse the body
-        TokenList? bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBrace, TokenType.ClosingCurlyBrace, Logger);
+        TokenList? bodyTokenList = list.FindBetweenBraces(TokenType.OpeningCurlyBracket, TokenType.ClosingCurlyBracket, Logger);
 
         if (bodyTokenList == null)
             LoggingManager.LogError("Invalid body after while statement condition");
