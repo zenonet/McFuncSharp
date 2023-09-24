@@ -14,7 +14,7 @@ public class Operator : StatementExtension, IInitializable
     public static void Initialize()
     {
         StatementExtensionRegistration.CreateStatementExtensionRegistration<Statement, Operator>(
-            list => list.List.Count != 0 && list.Peek().Type.IsMathematicOperator()
+            list => list.List.Count != 0 && list.Peek().Type.IsOperator()
         ).Register();
     }
 
