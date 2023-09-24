@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FuncScript.Internal;
+﻿using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
 using SlowLang.Engine.Initialization;
@@ -11,11 +9,11 @@ using SlowLang.Engine.Values;
 
 namespace FuncScript.Statements;
 
-public class MathematicOperator : StatementExtension, IInitializable
+public class Operator : StatementExtension, IInitializable
 {
     public static void Initialize()
     {
-        StatementExtensionRegistration.CreateStatementExtensionRegistration<Statement, MathematicOperator>(
+        StatementExtensionRegistration.CreateStatementExtensionRegistration<Statement, Operator>(
             list => list.List.Count != 0 && list.Peek().Type.IsMathematicOperator()
         ).Register();
     }
@@ -46,7 +44,7 @@ public class MathematicOperator : StatementExtension, IInitializable
         // If this is not the root operator, we don't need to do anything
         if (ChildStatements.Contains(baseStatement))
             return true;
-        
+
         // If this is the root operator, we need to parse the whole expression:
 
         // Get all statements and operations that are part of this expression
@@ -95,7 +93,7 @@ public class MathematicOperator : StatementExtension, IInitializable
         operations = new();
         statements.Add(leftmostSide);
         operations.Add(Operation);
-        while (r is MathematicOperator mathematicOperator)
+        while (r is Operator mathematicOperator)
         {
             operations.Add(mathematicOperator.Operation);
             statements.Add(mathematicOperator.baseStatement);
@@ -112,6 +110,7 @@ public class MathematicOperator : StatementExtension, IInitializable
         {
             TokenType.Multiply or TokenType.Divide => 2,
             TokenType.Plus or TokenType.Minus => 1,
+            TokenType.GreaterThan or TokenType.LessThan or TokenType.DoubleEquals => 0,
             _ => throw new ArgumentException("Invalid operation"),
         };
     }
@@ -148,10 +147,23 @@ public class MathematicOperator : StatementExtension, IInitializable
         public override Value Execute()
         {
             // This is an exception to the idea, that Statements should add their generated mcfunction code 
-            
+
             FuncScriptValue leftValue = (FuncScriptValue) LeftSide.Execute();
             FuncScriptValue rightValue = (FuncScriptValue) RightSide.Execute();
-            if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>())
+            if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>() && Operation is TokenType.GreaterThan or TokenType.LessThan or TokenType.DoubleEquals)
+            {
+
+                (Operation switch
+                {
+                    TokenType.GreaterThan => Computation.GreaterThan("a", "b", "c"),
+                    TokenType.LessThan => Computation.LessThan("a", "b", "c"),
+                    TokenType.DoubleEquals => Computation.Equal("a", "b", "c"),
+                }).Add();
+
+                Transpiler.MemoryTypes.Add(variableName, typeof(FuncBool));
+                MemoryManagement.MoveToStorage(variableName, "c", "byte").Add();
+            }
+            else if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>())
             {
                 // Move data to the computation scoreboard
                 MemoryManagement.MoveToComputationScoreboard(((VariableNameProvider) leftValue).VariableName, "a").Add();
