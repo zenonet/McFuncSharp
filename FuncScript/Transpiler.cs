@@ -66,6 +66,7 @@ public static class Transpiler
 
         Add($"scoreboard objectives add {Computation.ComputationScoreboard} dummy");
         Add("data remove storage funcscript_memory { }");
+        Add($"scoreboard players set one {Computation.ComputationScoreboard} 1");
 
         Console.WriteLine("Transpiling...");
         Statement.ParseMultiple(ref tokens);
