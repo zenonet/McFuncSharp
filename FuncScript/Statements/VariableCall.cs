@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FuncScript.Types;
+﻿using FuncScript.Types;
 using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Statements.StatementRegistrations;
@@ -12,7 +11,7 @@ public class VariableCall : Statement, IInitializable
 {
     public static List<string> Variables = new();
 
-    private string VariableName;
+    public string VariableName;
 
     public static void Initialize()
     {
