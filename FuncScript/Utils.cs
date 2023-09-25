@@ -9,4 +9,6 @@ public static class Utils{
     }
 
     public static bool IsOperator(this TokenType t) => t is TokenType.Plus or TokenType.Minus or TokenType.Multiply or TokenType.Divide or TokenType.DoubleEquals or TokenType.GreaterThan or TokenType.LessThan;
+    public static bool IsMathematicOperator(this TokenType t) => t is TokenType.Plus or TokenType.Minus or TokenType.Multiply or TokenType.Divide;
+    public static bool IsEqualityOperator(this TokenType t) => t is TokenType.DoubleEquals or TokenType.GreaterThan or TokenType.LessThan;
 }
