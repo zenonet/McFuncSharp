@@ -153,6 +153,9 @@ public class Operator : StatementExtension, IInitializable
             if (leftValue.IsOfType<FuncNumber>() && rightValue.IsOfType<FuncNumber>() && Operation is TokenType.GreaterThan or TokenType.LessThan or TokenType.DoubleEquals)
             {
 
+                // Move data to the computation scoreboard
+                MemoryManagement.MoveToComputationScoreboard(leftValue.AsVarnameProvider(), "a").Add();
+                MemoryManagement.MoveToComputationScoreboard(rightValue.AsVarnameProvider(), "b").Add();
                 (Operation switch
                 {
                     TokenType.GreaterThan => Computation.GreaterThan("a", "b", "c"),
