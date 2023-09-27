@@ -11,7 +11,7 @@ public class FuncBool : FuncScriptValue
         Value = value;
     }
     
-    public static bool TryParse(ref TokenList list, out FuncNumber result)
+    public static bool TryParse(ref TokenList list, out FuncBool result)
     {
         if (list.Peek().Type != TokenType.Bool)
         {
