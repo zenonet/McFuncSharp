@@ -15,10 +15,10 @@ public class BreakStatement : Statement, IInitializable
 
     public override bool OnParse(ref TokenList list)
     {
-        Loop last = (Loop) Transpiler.StackTrace.Last(x => x is Loop);
+        Loop loop = (Loop) Transpiler.StackTrace.Last(x => x is Loop);
 
-        MemoryManagement.SetVariable("break_from_" + last.LoopFunctionName, "1b").Add();
-        
+        MemoryManagement.SetVariable("break_from_" + loop.LoopFunctionName, "1b").Add();
+        loop.ContainsBreakStatement = true;
         return true;
     }
 }

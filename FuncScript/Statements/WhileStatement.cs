@@ -46,15 +46,11 @@ public class WhileStatement : Loop, IInitializable
         
         LoopFunctionName = IdManager.GetFunctionId();
 
-        string prefixForAllBodyStatements;
         if (condition is ConstFuncScriptValue)
         {
             // TODO: Allow for const values as the condition of an if statement
             throw new NotImplementedException("Const values as the condition of an if statement is not yet implemented");
         }
-        else
-            prefixForAllBodyStatements = $"execute if data storage {MemoryManagement.MemoryTag} {{variables:{{{condition.AsVarnameProvider()}:1}}}} run ";
-
 
         // Remove the closing brace
         if (!list.StartsWith(TokenType.ClosingParenthesis))
@@ -90,7 +86,7 @@ public class WhileStatement : Loop, IInitializable
         // Add a recursive call to the loop function
         loopCode += conditionalLoopCall;
 
-        loopCode = new Regex("(\n).*?(?=\\S)").Replace(loopCode, $"$1execute unless data storage {MemoryManagement.MemoryTag} {{variables:{{break_from_{LoopFunctionName}:1b}}}} run ");
+        loopCode = AddBreakabilityIfNeccessary(loopCode);
         
         // Create a loop entrypoint
         FunctionEntrypoint loopFunction = new(LoopFunctionName, loopCode.CreateCommandArray());

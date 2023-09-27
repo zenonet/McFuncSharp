@@ -78,7 +78,6 @@ public class ForLoop : Loop, IInitializable
                 : "";
 
 
-        string prefixForAllBodyStatements;
         if (condition is ConstFuncScriptValue)
         {
             // TODO: Allow for const values as the condition of an if statement
@@ -120,7 +119,7 @@ public class ForLoop : Loop, IInitializable
         // Add a recursive call to the loop function
         loopCode += conditionalLoopCall;
 
-        loopCode = new Regex("(\n).*?(?=\\S)").Replace(loopCode, $"$1execute unless data storage {MemoryManagement.MemoryTag} {{variables:{{break_from_{LoopFunctionName}:1b}}}} run ");
+        loopCode = AddBreakabilityIfNeccessary(loopCode);
 
         // Create a loop entrypoint
         FunctionEntrypoint loopFunction = new(LoopFunctionName, loopCode.CreateCommandArray());
