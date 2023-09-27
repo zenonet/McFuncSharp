@@ -30,6 +30,11 @@ public static class Transpiler
     public static Dictionary<string, Type> MemoryTypes = new();
 
     public static DataPackGenerator Generator;
+    
+    /// <summary>
+    /// A compile time stack trace
+    /// </summary>
+    public static Stack<Statement> StackTrace = new();
 
     public static void Transpile(string funcScriptCode, Config config)
     {
