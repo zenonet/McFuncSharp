@@ -71,8 +71,10 @@ public class IfStatement : Statement, IInitializable
 
         Transpiler.prefixes.Add(prefixForAllBodyStatements);
 
+        Transpiler.StackTrace.Push(this);
         // Parse the statements in the body
         Statement.ParseMultiple(ref bodyTokenList);
+        Transpiler.StackTrace.Pop();
 
         Transpiler.prefixes.Remove(prefixForAllBodyStatements);
 

@@ -56,7 +56,9 @@ public class FunctionDefinition : Statement, IInitializable
 
         list.RemoveRange(..(rawBody.List.Count + 1)); // Remove the body and the curly braces
 
+        Transpiler.StackTrace.Push(this);
         string functionCode = Transpiler.YoinkGeneratedCode(() => Statement.ParseMultiple(ref rawBody));
+        Transpiler.StackTrace.Pop();
 
         Entrypoint entrypoint;
 
