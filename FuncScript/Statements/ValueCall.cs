@@ -54,7 +54,7 @@ public class ValueCall : Statement, IInitializable
 
         Id = IdManager.GetDataId();
 
-        MemoryManagement.SetVariable(Id, ((FuncScriptValue)value).Generate()).Add();
+        MemoryManagement.SetVariable(Id, value.Generate()).Add();
 
         Transpiler.MemoryTypes.Add(Id, value.GetType());
         return true;
