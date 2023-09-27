@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FuncScript.Internal;
+﻿using FuncScript.Internal;
 using FuncScript.Types;
 using SlowLang.Engine;
 
@@ -142,7 +140,7 @@ public static class Resources
                 if (!parameters[0].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The getBlock function takes a vector as its first argument but received {parameters[0].GetType().Name}.");
                 if (!parameters[1].IsOfType<FuncVector>())
-                    LoggingManager.LogError($"The getBlock function takes a vector as its second argument but received {parameters[0].GetType().Name}.");
+                    LoggingManager.LogError($"The getBlock function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
 
                 string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncVector);
@@ -250,7 +248,7 @@ public static class Resources
                     LoggingManager.LogError($"The glow function takes 1 argument but received {parameters.Length} arguments.");
 
                 if (!parameters[0].IsOfType<FuncEntity>())
-                    LoggingManager.LogError("The glow function takes an entity as its argument but received " + parameters[1].GetFuncTypeName());
+                    LoggingManager.LogError("The glow function takes an entity as its argument but received " + parameters[0].GetFuncTypeName());
 
                 return $"effect give @e[tag={parameters[0].AsVarnameProvider()}] minecraft:glowing 3 255 true";
             }
@@ -266,7 +264,7 @@ public static class Resources
 
                 if (!parameters[0].IsOfType<FuncNumber>())
                     LoggingManager.LogError("The sin function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
-                
+
                 string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncNumber);
                 ReturnValue = id;
@@ -284,7 +282,7 @@ public static class Resources
 
                 if (!parameters[0].IsOfType<FuncNumber>())
                     LoggingManager.LogError("The sin function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
-                
+
                 string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncNumber);
                 ReturnValue = id;
@@ -302,7 +300,7 @@ public static class Resources
 
                 if (!parameters[0].IsOfType<FuncNumber>())
                     LoggingManager.LogError("The sin function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
-                
+
                 string id = IdManager.GetDataId();
                 Transpiler.MemoryTypes[id] = typeof(FuncNumber);
                 ReturnValue = id;
@@ -314,18 +312,60 @@ public static class Resources
                     MemoryManagement.MoveToComputationScoreboard("sin_for_tan 1000000", "a") + "\n" +
                     MemoryManagement.MoveToComputationScoreboard("cos_for_tan 1000", "b") + "\n" +
                     Computation.Divide("a", "b", "c") + "\n" +
-                    MemoryManagement.MoveToStorage(id, "c", scale:0.001f) + "\n";
-                    
+                    MemoryManagement.MoveToStorage(id, "c", scale: 0.001f) + "\n";
             }
         },
-        
+
+        #endregion
+
+        #region Entity Selection Functions
+
+        {
+            "getClosestPlayer", parameters =>
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The getClosestPlayer function takes 1 argument and an optional one but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncVector>())
+                    LoggingManager.LogError("The getClosestPlayer function takes a vector as its argument but received " + parameters[0].GetFuncTypeName());
+
+                string id = IdManager.GetEntityId();
+                Transpiler.MemoryTypes[id] = typeof(FuncEntity);
+                ReturnValue = id;
+
+                return $"summon marker 0 0 0 {{Tags:[\"funcscript_controllled\", \"funcscript_entity_selector\"]}}\n" +
+                       $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
+                       $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type=player, sort=nearest, limit=1] add {id}\n";
+            }
+        },
+        {
+            "getClosestEntityOfType", parameters =>
+            {
+                if (parameters.Length != 2)
+                    LoggingManager.LogError($"The getClosestEntityOfType function takes 2 argument and an optional one but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncVector>())
+                    LoggingManager.LogError("The getClosestEntityOfType function takes a vector as its first argument but received " + parameters[0].GetFuncTypeName());
+
+                if (!parameters[1].IsOfType<FuncEntityType>())
+                    LoggingManager.LogError("The getClosestEntityOfType function takes an entity type as its second argument but received " + parameters[1].GetFuncTypeName());
+
+                string id = IdManager.GetEntityId();
+                Transpiler.MemoryTypes[id] = typeof(FuncEntity);
+                ReturnValue = id;
+
+                return $"summon marker 0 0 0 {{Tags:[\"funcscript_controllled\", \"funcscript_entity_selector\"]}}\n" +
+                       $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
+                       $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type={parameters[1].Generate()}, sort=nearest, limit=1] add {id}\n";
+            }
+        },
 
         #endregion
     };
-    
+
     private static string CalculateSinAndCos(string inputVariable) => MemoryManagement.MoveToComputationScoreboard(inputVariable + " -1000000", "dtf") + "\n" +
-                                                        MemoryManagement.MoveToStorage("sin_input", "dtf", "float", 0.000001f) + "\n" +
-                                                        "summon marker ~ ~ ~ {Tags:[\"funcscript_controlled\", \"funcscript_sin_calc\"]}\n" +
-                                                        $"data modify entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0] set from storage {MemoryManagement.MemoryTag} variables.sin_input\n" +
-                                                        "execute as @e[tag=funcscript_sin_calc] at @s run tp @s ^ ^ ^1\n";
+                                                                      MemoryManagement.MoveToStorage("sin_input", "dtf", "float", 0.000001f) + "\n" +
+                                                                      "summon marker ~ ~ ~ {Tags:[\"funcscript_controlled\", \"funcscript_sin_calc\"]}\n" +
+                                                                      $"data modify entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0] set from storage {MemoryManagement.MemoryTag} variables.sin_input\n" +
+                                                                      "execute as @e[tag=funcscript_sin_calc] at @s run tp @s ^ ^ ^1\n";
 }
