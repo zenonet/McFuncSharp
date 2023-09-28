@@ -17,6 +17,12 @@ public class NotOperator : Statement, IInitializable
     }
 
     private VariableNameProvider variableNameProvider = null!;
+
+    protected override bool CutTokensManually()
+    {
+        return true;
+    }
+
     public override bool OnParse(ref TokenList list)
     {
         list.Pop();
@@ -24,19 +30,21 @@ public class NotOperator : Statement, IInitializable
         
         FuncScriptValue value = (FuncScriptValue) statement.Execute();
 
-        if (!value.IsOfType<FuncBool>())
+        if (!value.IsOfType<FuncBool>() && !value.IsOfType<FuncNumber>())
         {
-            LoggingManager.LogError("Expected boolean value for not operator");
+            LoggingManager.LogError("Expected boolean or number value for not operator");
             return false;
         }
+        
+        string typeSuffix = value.IsOfType<FuncBool>() ? "b" : "d";
 
         string id = IdManager.GetDataId();
         Transpiler.MemoryTypes[id] = typeof(FuncBool);
         variableNameProvider = new(id);
         
         // invert it
-        $"execute if data storage {MemoryManagement.MemoryTag} {Utils.PathToIfData("variables." + value.AsVarnameProvider(), "0b")} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 1b".Add();
-        $"execute unless data storage {MemoryManagement.MemoryTag} {Utils.PathToIfData("variables." + value.AsVarnameProvider(), "0b")} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 0b".Add();
+        $"execute if data storage {MemoryManagement.MemoryTag} {Utils.PathToIfData("variables." + value.AsVarnameProvider(), $"0{typeSuffix}")} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 1{typeSuffix}".Add();
+        $"execute unless data storage {MemoryManagement.MemoryTag} {Utils.PathToIfData("variables." + value.AsVarnameProvider(), $"0{typeSuffix}")} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 0{typeSuffix}".Add();
         
         return true;
     }
