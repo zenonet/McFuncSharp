@@ -46,7 +46,7 @@ public static class Resources
                 }
 
                 if (!parameters[0].IsOfType<FuncEntityType>())
-                    LoggingManager.LogError($"The summon function takes an entity as its first argument but received {parameters[0].GetType().Name}.");
+                    LoggingManager.LogError($"The summon function takes an entity type as its first argument but received {parameters[0].GetType().Name}.");
 
                 if (!parameters[1].IsOfType<FuncVector>())
                     LoggingManager.LogError($"The summon function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
@@ -65,6 +65,27 @@ public static class Resources
                        $"data modify entity @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}\n" + // Set the position of the helper entity
                        $"execute at @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1] run summon {parameters[0].Generate()} ~ ~ ~" + " {\"Tags\":[\"" + entityId + "\", \"funcscript_controlled\"]}\n" + // Summon the entity at the position of the helper
                        "kill @e[tag=funcscript_controlled, tag=funcscript_helper, limit=1]\n"; // Remove the helper entity
+            }
+        },
+        {
+            "kill", parameters =>
+            {
+                if (parameters.Length > 2)
+                {
+                    LoggingManager.LogError($"The setblock function takes two arguments but received {parameters.Length} arguments.");
+                }
+
+                if (!parameters[0].IsOfType<FuncEntity>())
+                    LoggingManager.LogError($"The kill function takes an entity as its first argument but received {parameters[0].GetType().Name}.");
+
+                if (parameters.Length == 2 && !parameters[1].IsOfType<FuncBool>())
+                    LoggingManager.LogError($"The kill function takes a bool as its second argument but received {parameters[1].GetType().Name}.");
+
+                return
+                    (parameters.Length == 2
+                        ? $"execute if data storage minecraft:funcscript_memory {Utils.PathToIfData("variables." + parameters[1].AsVarnameProvider(), "1b")} run data merge entity @e[tag={parameters[0].AsVarnameProvider()}, limit=1] {{DeathLootTable:\"minecraft:empty\"}}\n"
+                        : "") +
+                          $"kill @e[tag={parameters[0].AsVarnameProvider()}]\n";
             }
         },
         {
