@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Extensions.Logging;
 using SlowLang.Engine;
 using SlowLang.Engine.Values;
@@ -15,6 +12,25 @@ public abstract class FuncScriptValue : Value
         return string.Empty;
     }
 
+    public Type GetFuncType()
+    {
+        if (this is VariableNameProvider v)
+        {
+            if (v.VariableName.Contains('.'))
+            {
+                Type t = GetTypeOfPropertyChain(v.VariableName);
+
+                return t;
+            }
+            
+            if (!Transpiler.MemoryTypes.ContainsKey(v.VariableName))
+                Logger.LogError($"The type of the variable {v.VariableName} is not defined. {this}");
+            return Transpiler.MemoryTypes[v.VariableName];
+        }
+
+        return ((Object) this).GetType();
+    }
+    
     public bool IsOfType(Type type)
     {
         if (this is VariableNameProvider v)
@@ -31,7 +47,7 @@ public abstract class FuncScriptValue : Value
             return Transpiler.MemoryTypes[v.VariableName] == type;
         }
 
-        return this.GetType() == type;
+        return ((Object) this).GetType() == type;
     }
 
     public bool IsOfType<T>() where T : FuncScriptValue
@@ -80,6 +96,6 @@ public abstract class FuncScriptValue : Value
                 Logger.LogError($"The type of the variable {v.VariableName} is not defined. {this}");
             return Transpiler.MemoryTypes[v.VariableName].Name;
         }
-        return this.GetType().Name;
+        return ((Object) this).GetType().Name;
     }
 }
