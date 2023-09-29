@@ -11,8 +11,9 @@ McFuncScript is a programming language that transpiles to McFunction (Minecraft 
 
 * Variables (dynamically typed)
 * If Statements
-* While loops (currently limited by maxCommandChainLength)
-* For loops
+* Loops (currently limited by maxCommandChainLength)
+   * While loops 
+   * For loops
 * Functions (transpile to actual minecraft functions; no parameter nor return value support yet)
 * Operators
     * Comparison (>, <, ==)
