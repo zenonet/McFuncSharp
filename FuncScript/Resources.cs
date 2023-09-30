@@ -330,10 +330,32 @@ public static class Resources
                     CalculateSinAndCos(parameters[0].AsVarnameProvider()) +
                     $"data modify storage {MemoryManagement.MemoryTag} variables.sin_for_tan set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[0]\n" +
                     $"data modify storage {MemoryManagement.MemoryTag} variables.cos_for_tan set from entity @e[tag=funcscript_sin_calc, limit=1] Pos[2]\n" +
-                    MemoryManagement.MoveToComputationScoreboard("sin_for_tan 1000000", "a") + "\n" +
-                    MemoryManagement.MoveToComputationScoreboard("cos_for_tan 1000", "b") + "\n" +
+                    MemoryManagement.MoveToComputationScoreboard("sin_for_tan 1000000", "a") +"\n"+
+                    MemoryManagement.MoveToComputationScoreboard("cos_for_tan 1000", "b") +"\n" +
                     Computation.Divide("a", "b", "c") + "\n" +
                     MemoryManagement.MoveToStorage(id, "c", scale: 0.001f) + "\n";
+            }
+        },
+        {
+            "atan", parameters => 
+            {
+                if (parameters.Length != 1)
+                    LoggingManager.LogError($"The atan function takes 1 argument but received {parameters.Length} arguments.");
+
+                if (!parameters[0].IsOfType<FuncNumber>())
+                    LoggingManager.LogError("The atan function takes a number as its argument but received " + parameters[0].GetFuncTypeName());
+                
+                string id = IdManager.GetDataId();
+                Transpiler.MemoryTypes[id] = typeof(FuncNumber);
+                ReturnValue = id;
+
+                return 
+                    "summon marker 0 0 1 {Tags:[\"funcscript_controlled\", \"funcscript_sin_calc\"]}\n" +
+                    $"data modify entity @e[tag=funcscript_sin_calc, limit=1] Pos[0] set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" + 
+                    "execute as @e[tag=funcscript_sin_calc] at @s positioned .0 .0 .0 facing entity @s feet run tp @s .0 .0 .0 ~ ~\n" +
+                    "execute store result score a funcscript_computation run data get entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0] -10000000\n" +
+                    //$"data modify storage {MemoryManagement.MemoryTag} variables.{id} set from entity @e[tag=funcscript_sin_calc, limit=1] Rotation[0]\n" +
+                    MemoryManagement.MoveToStorage(id, "a", scale: 0.0000001f) + "\n";
             }
         },
 
