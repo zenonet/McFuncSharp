@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using FuncScript.Internal;
 using FuncScript.Types;
@@ -30,7 +27,7 @@ public static class Transpiler
     public static Dictionary<string, Type> MemoryTypes = new();
 
     public static DataPackGenerator Generator;
-    
+
     /// <summary>
     /// A compile time stack trace
     /// </summary>
@@ -72,6 +69,9 @@ public static class Transpiler
         Add($"scoreboard objectives add {Computation.ComputationScoreboard} dummy");
         Add("data remove storage funcscript_memory { }");
         Add($"scoreboard players set one {Computation.ComputationScoreboard} 1");
+
+        Console.WriteLine("Loading builtin functions...");
+        BuiltinFunctionDefinitionAnalyser.LoadBuiltinFunctionDefinitions();
 
         Console.WriteLine("Transpiling...");
         Statement.ParseMultiple(ref tokens);
