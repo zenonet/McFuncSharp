@@ -153,24 +153,6 @@ public static class Resources
             }
         },
         {
-            "addVector", parameters =>
-            {
-                if (parameters.Length != 2)
-                    LoggingManager.LogError($"The addVector function takes 2 argument but received {parameters.Length} arguments.");
-
-                if (!parameters[0].IsOfType<FuncVector>())
-                    LoggingManager.LogError($"The getBlock function takes a vector as its first argument but received {parameters[0].GetType().Name}.");
-                if (!parameters[1].IsOfType<FuncVector>())
-                    LoggingManager.LogError($"The getBlock function takes a vector as its second argument but received {parameters[1].GetType().Name}.");
-
-                string id = IdManager.GetDataId();
-                Transpiler.MemoryTypes[id] = typeof(FuncVector);
-                ReturnValue = id;
-
-                return FuncVector.VectorAdd(parameters[0].AsVarnameProvider(), parameters[1].AsVarnameProvider(), id);
-            }
-        },
-        {
             "raycastBlock", parameters =>
             {
                 if (parameters.Length != 2)
