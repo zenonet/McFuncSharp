@@ -17,6 +17,8 @@ public class FunctionCall : Statement, IInitializable
     public static void Initialize()
     {
         Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.OpeningParenthesis));
+        // Function call to a function in a static class
+        Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.Dot, TokenType.Keyword, TokenType.OpeningParenthesis));
     }
 
     protected override bool CutTokensManually() => true;
@@ -26,6 +28,12 @@ public class FunctionCall : Statement, IInitializable
     public override bool OnParse(ref TokenList list)
     {
         string name = list.Pop().RawContent;
+
+        if (list.StartsWith(TokenType.Dot))
+        {
+            list.Pop();
+            name += $".{list.Pop().RawContent}";
+        }
 
         // Remove the opening brace
         list.Pop();
