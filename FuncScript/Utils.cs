@@ -8,7 +8,7 @@ public static class Utils{
         return new Regex("[\\[\\\\\\^\\$\\.\\|\\?\\*\\+\\(\\)\\{\\}\\-\\%]").Replace(input, "\\$&");
     }
 
-    public static bool IsOperator(this TokenType t) => t is TokenType.Plus or TokenType.Minus or TokenType.Multiply or TokenType.Divide or TokenType.DoubleEquals or TokenType.GreaterThan or TokenType.LessThan;
+    public static bool IsOperator(this TokenType t) => t.IsMathematicOperator() || t.IsEqualityOperator();
     public static bool IsMathematicOperator(this TokenType t) => t is TokenType.Plus or TokenType.Minus or TokenType.Multiply or TokenType.Divide;
     public static bool IsEqualityOperator(this TokenType t) => t is TokenType.DoubleEquals or TokenType.GreaterThan or TokenType.LessThan;
     
@@ -30,5 +30,25 @@ public static class Utils{
 
         return output;
         
+    }
+
+    public static string GetDotPath(this TokenList list)
+    {
+        string output = "";
+        for (int i = 0; i < list.List.Count; i++)
+        {
+            if (list.Peek(i).Type == TokenType.Dot)
+            {
+                output += ".";
+            }
+            else
+            {
+                output += list.Peek(i).RawContent;
+            }
+
+            list.Pop();
+        }
+
+        return output;
     }
 }
