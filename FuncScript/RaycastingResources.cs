@@ -12,7 +12,7 @@ public static class RaycastingResources
 
     public static string StringRaycastAccuracy => RaycastAccuracy.ToString(CultureInfo.InvariantCulture);
 
-    public const float MaxRayLength = 50;
+    public const float MaxRayLength = 100;
 
     public const int IterationsToReachMaxRayLength = (int) (MaxRayLength / RaycastAccuracy);
 
