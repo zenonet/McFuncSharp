@@ -20,9 +20,5 @@ Config config = new(
     datapackPath,
     "first_funcsharp", ReloadBehavior.KillOld);
 
-Stopwatch sw = Stopwatch.StartNew();
 Transpiler.Transpile(script, config);
-sw.Stop();
-
-Console.WriteLine($"Successfully transpiled in {sw.ElapsedMilliseconds}ms");
 return 0;

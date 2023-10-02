@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using FuncScript.Internal;
 using FuncScript.Types;
@@ -39,9 +40,9 @@ public static class Transpiler
 
         Generator = new(config.DataPackPath, config.DataPackNameSpace);
 
-        McFunctionBuilder = new();
+        AddCalculationDimension();
 
-        TokenList tokens = Lexer.Lex(funcScriptCode);
+        McFunctionBuilder = new();
 
         switch (config.ReloadBehavior)
         {
@@ -70,11 +71,17 @@ public static class Transpiler
         Add("data remove storage funcscript_memory { }");
         Add($"scoreboard players set one {Computation.ComputationScoreboard} 1");
 
-        Console.WriteLine("Loading builtin functions...");
-        BuiltinFunctionDefinitionAnalyser.LoadBuiltinFunctionDefinitions();
+        Stopwatch sw = Stopwatch.StartNew();
+        TokenList tokens = Lexer.Lex(funcScriptCode);
+        Console.WriteLine("Lexed in " + sw.ElapsedMilliseconds + "ms");
 
-        Console.WriteLine("Transpiling...");
+        sw.Restart();
+        BuiltinFunctionDefinitionAnalyser.LoadBuiltinFunctionDefinitions();
+        Console.WriteLine("Loaded builtin functions in " + sw.ElapsedMilliseconds + "ms");
+
+        sw.Restart();
         Statement.ParseMultiple(ref tokens);
+        Console.WriteLine("Transpiled in " + sw.ElapsedMilliseconds + "ms");
 
         IEnumerable<string> tagRemovalCommands =
             from variable in MemoryTypes
@@ -92,10 +99,21 @@ public static class Transpiler
             Generator.AddEntrypoint(entrypoint);
         }
 
-        Console.WriteLine("Generating Data Pack...");
+        sw.Restart();
         Generator.Generate();
+        Console.WriteLine("Generated Data Pack in " + sw.ElapsedMilliseconds + "ms");
 
         Console.WriteLine("Done!");
+    }
+
+    private static void AddCalculationDimension()
+    {
+        Generator.AddDimension(new Dimension
+        {
+            Name = "funcscript_calc_dim",
+            Json = "{" +
+                   "}"
+        });
     }
 
     /// <summary>
