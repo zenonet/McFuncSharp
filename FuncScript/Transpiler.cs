@@ -71,11 +71,13 @@ public static class Transpiler
         Add("data remove storage funcscript_memory { }");
         Add($"scoreboard players set one {Computation.ComputationScoreboard} 1");
 
-        // Remove comments:
+        
+        // TODO: Fix this destroying line numbers
+        /*// Remove comments:
         funcScriptCode = Regex.Replace(funcScriptCode, @"\/\/.*$|\/\*[\d\D]*?\*\/| (?= )", "", RegexOptions.Multiline);
         funcScriptCode = funcScriptCode.Replace("\r\n", "\n");
         funcScriptCode = funcScriptCode.Replace("\n", " ");
-        funcScriptCode = funcScriptCode.Trim(' ', '\n', '\r');
+        funcScriptCode = funcScriptCode.Trim(' ', '\n', '\r');*/
         
         Stopwatch sw = Stopwatch.StartNew();
         TokenList tokens = Lexer.Lex(funcScriptCode);
