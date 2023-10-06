@@ -18,7 +18,8 @@ public class FunctionCall : Statement, IInitializable
     {
         Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.OpeningParenthesis));
         // Function call to a function in a static class
-        Register(StatementRegistration.Create<FunctionCall>(TokenType.Keyword, TokenType.Dot, TokenType.Keyword, TokenType.OpeningParenthesis));
+        Register(StatementRegistration.Create<FunctionCall>(list => !VariableCall.Variables.Contains(list.Peek().RawContent), TokenType.Keyword
+            , TokenType.Dot, TokenType.Keyword, TokenType.OpeningParenthesis));
     }
 
     protected override bool CutTokensManually() => true;
@@ -44,7 +45,8 @@ public class FunctionCall : Statement, IInitializable
             return false;
 
         //Remove the parameter list
-        list.RemoveRange(..betweenBraces.List.Count);
+        if(betweenBraces.List.Count > 0)
+            list.RemoveRange(..betweenBraces.List.Count);
         //Remove the closing brace
         list.Pop();
 
@@ -59,7 +61,7 @@ public class FunctionCall : Statement, IInitializable
         }
 
         FuncScriptValue[] values = new FuncScriptValue[parameters.Count];
-        
+
         for (int i = 0; i < parameters.Count; i++)
         {
             values[i] = (FuncScriptValue) parameters[i].Execute();
@@ -68,10 +70,11 @@ public class FunctionCall : Statement, IInitializable
         if (Resources.Functions.TryGetValue(name, out Func<FuncScriptValue[], string>? function))
         {
             // An internal function is being called
-            
+
             // Find the correct function definition and add it
             function(values).Add();
-        }else if (Transpiler.AdditionalEntrypoints.FirstOrDefault(x => x.Name == name) != null)
+        }
+        else if (Transpiler.AdditionalEntrypoints.FirstOrDefault(x => x.Name == name) != null)
         {
             // A user defined function is being called
             $"function {Transpiler.Config.DataPackNameSpace}:{name}".Add();
@@ -81,7 +84,7 @@ public class FunctionCall : Statement, IInitializable
             LoggingManager.ErrorLogger.LogWarning($"Function {name} not found. Assuming the function is defined somewhere else.");
             $"function {Transpiler.Config.DataPackNameSpace}:{name}".Add();
         }
-        
+
         returnValue = Resources.ReturnValue;
 
         return true;
