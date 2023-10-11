@@ -87,19 +87,19 @@ public class FuncVector : FuncScriptValue
     
     
 
-    public static string VectorAdd(string addend1, string addent2, string output)
+    public static string VectorAdd(string addend1, string addent2, string output, float scale = 1)
     {
         StringBuilder cmd = new();
 
         // Copy the first vector to the scoreboard
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[0]", "ax"));
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[1]", "ay"));
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[2]", "az"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[0] {scale}", "ax"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[1] {scale}", "ay"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addend1}[2] {scale}", "az"));
         
         // Copy the second vector to the scoreboard
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[0]", "bx"));
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[1]", "by"));
-        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[2]", "bz"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[0] {scale}", "bx"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[1] {scale}", "by"));
+        cmd.AppendLine(MemoryManagement.MoveToComputationScoreboard($"{addent2}[2] {scale}", "bz"));
         
         // Add the vector components
         cmd.AppendLine(Computation.Add("ax", "bx", "outx"));
@@ -107,9 +107,9 @@ public class FuncVector : FuncScriptValue
         cmd.AppendLine(Computation.Add("az", "bz", "outz"));
         
         // Move the individual components to storage
-        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx"));
-        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy"));
-        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz"));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.x", "outx", scale:1/scale));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.y", "outy", scale:1/scale));
+        cmd.AppendLine(MemoryManagement.MoveToStorage("vectorcopy.z", "outz", scale:1/scale));
         
         // Write the components back into a single vector
         cmd.AppendLine($"data remove storage {MemoryManagement.MemoryTag} variables.{output}");
