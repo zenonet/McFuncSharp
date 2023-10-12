@@ -10,4 +10,9 @@ public class VariableNameProvider : FuncScriptValue
     }
 
     public string VariableName { get; set; }
+
+    public override string ToString()
+    {
+        return VariableName;
+    }
 }
