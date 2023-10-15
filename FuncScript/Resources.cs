@@ -358,9 +358,12 @@ public static class Resources
                 Transpiler.MemoryTypes[id] = typeof(FuncEntity);
                 ReturnValue = id;
 
-                return $"summon marker 0 0 0 {{Tags:[\"funcscript_controllled\", \"funcscript_entity_selector\"]}}\n" +
-                       $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
-                       $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type=player, sort=nearest, limit=1] add {id}\n";
+                return
+                    $"tag @e[tag={id}] remove {id}\n" +
+                    $"summon marker 0 0 0 {{Tags:[\"funcscript_controlled\", \"funcscript_entity_selector\"]}}\n" +
+                    $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
+                    $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type=player, sort=nearest, limit=1] add {id}\n" +
+                    "kill @e[tag=funcscript_entity_selector, limit=1]\n";
             }
         },
         {
@@ -379,9 +382,12 @@ public static class Resources
                 Transpiler.MemoryTypes[id] = typeof(FuncEntity);
                 ReturnValue = id;
 
-                return $"summon marker 0 0 0 {{Tags:[\"funcscript_controllled\", \"funcscript_entity_selector\"]}}\n" +
-                       $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
-                       $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type={parameters[1].Generate()}, sort=nearest, limit=1] add {id}\n";
+                return
+                    $"tag @e[tag={id}] remove {id}\n" +
+                    $"summon marker 0 0 0 {{Tags:[\"funcscript_controlled\", \"funcscript_entity_selector\"]}}\n" +
+                    $"data modify entity @e[tag=funcscript_entity_selector, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[0].AsVarnameProvider()}\n" +
+                    $"execute at @e[tag=funcscript_entity_selector, limit=1] run tag @e[type={parameters[1].Generate()}, sort=nearest, limit=1] add {id}\n" +
+                    "kill @e[tag=funcscript_entity_selector, limit=1]\n";
             }
         },
 
