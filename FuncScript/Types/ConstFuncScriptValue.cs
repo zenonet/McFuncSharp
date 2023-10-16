@@ -1,6 +1,6 @@
 ﻿namespace FuncScript.Types;
 
-public class ConstFuncScriptValue : FuncScriptValue
+public abstract class ConstFuncScriptValue : FuncScriptValue
 {
     
 }
