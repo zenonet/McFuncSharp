@@ -1,7 +1,6 @@
-﻿using System;
+﻿namespace FuncScript;
 
-namespace FuncScript;
-
+[AttributeUsage(AttributeTargets.Property)]
 public class FuncPropertyListAttribute : Attribute
 {
     
