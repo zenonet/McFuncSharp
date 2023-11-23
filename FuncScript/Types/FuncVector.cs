@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using FuncScript.Internal;
 using SlowLang.Engine;
-using SlowLang.Engine.Statements;
 using SlowLang.Engine.Tokens;
-using SlowLang.Engine.Values;
 
 namespace FuncScript.Types;
 
