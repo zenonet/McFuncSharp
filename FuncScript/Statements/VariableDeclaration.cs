@@ -20,6 +20,13 @@ public class VariableDeclaration : Statement, IInitializable
     {
         Type type = Value.ParseTypeKeyword(list.Pop())!;
         string name = list.Peek().RawContent;
+
+        if (Transpiler.MemoryTypes.ContainsKey(name))
+        {
+            LoggingManager.LogError($"Variable '{name}' is already declared.");
+            return false;
+        }
+        
         Transpiler.MemoryTypes[name] = type;
 
         if (list.Peek(1).Type == TokenType.Colon)
