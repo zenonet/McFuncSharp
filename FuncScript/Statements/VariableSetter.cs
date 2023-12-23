@@ -1,5 +1,6 @@
 ﻿using FuncScript.Internal;
 using FuncScript.Types;
+using SlowLang.Engine;
 using SlowLang.Engine.Initialization;
 using SlowLang.Engine.Statements;
 using SlowLang.Engine.Statements.StatementRegistrations;
@@ -67,6 +68,12 @@ public class VariableSetter : Statement, IInitializable
             }
         }
 
+        if (!variableName.Contains('.') && !Transpiler.MemoryTypes.ContainsKey(variableName))
+        {
+            LoggingManager.LogError($"Variable '{variableName}' needs to be declared before setting it.");
+            return false;
+        }
+
         list.Pop(); // Equals
 
         Statement? value = Parse(ref list);
@@ -76,6 +83,12 @@ public class VariableSetter : Statement, IInitializable
             return false;
 
         VariableNameProvider variableNameProvider = (VariableNameProvider) value.Execute();
+
+        if (variableNameProvider.GetFuncType() != Transpiler.MemoryTypes[variableName])
+        {
+            LoggingManager.LogError($"Type mismatch: Trying to write a {variableNameProvider.GetFuncTypeName()} into a variable of type {Transpiler.MemoryTypes[variableName].Name}");
+            return false;
+        }
 
         if (variableNameProvider.IsOfType<FuncEntity>())
         {

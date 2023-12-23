@@ -9,6 +9,8 @@ public class FuncVector : FuncScriptValue
 {
     public FuncSharp.Core.Vector Value { get; set; }
 
+    public static string GetKeyword() => "Vector";
+
     [FuncPropertyList]
     public static Dictionary<string, Type> Properties { get; } = new()
     {
