@@ -7,4 +7,5 @@ namespace FuncScript.Types;
 
 public class FuncEntity : FuncScriptValue
 {
+    public static string GetKeyword() => "Entity";
 }

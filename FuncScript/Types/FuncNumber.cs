@@ -6,6 +6,8 @@ public class FuncNumber : FuncScriptValue
 {
     public string Value { get; }
     
+    public static string GetKeyword() => "Number";
+
     public FuncNumber(string value)
     {
         Value = value;

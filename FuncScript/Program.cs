@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using FuncScript;
+﻿using FuncScript;
 
 if(args.Length != 2)
 {

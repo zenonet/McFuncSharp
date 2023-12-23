@@ -11,6 +11,8 @@ public class FuncString : FuncScriptValue
     {
         Value = value;
     }
+    public static string GetKeyword() => "string";
+
     
     public static bool TryParse(ref TokenList list, out FuncString result)
     {

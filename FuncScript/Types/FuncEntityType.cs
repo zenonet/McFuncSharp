@@ -15,6 +15,8 @@ public class FuncEntityType : ConstFuncScriptValue
         Value = value;
     }
 
+    public static string GetKeyword() => "EntityType";
+
     public static bool TryParse(ref TokenList list, [MaybeNullWhen(false)] out FuncEntityType result)
     {
         if (list.Peek().Type != TokenType.Keyword || list.Peek().RawContent != "entity")
