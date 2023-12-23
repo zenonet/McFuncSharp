@@ -71,7 +71,8 @@ public class Entity
         return 
             $"execute if entity @e[tag={entity}] run summon marker 0 0 0 {{Tags:[\"funcscript_controlled\", \"funscript_teleportation_marker\"]}}\n" +
             $"execute if entity @e[tag={entity}] run data modify entity @e[tag=funscript_teleportation_marker, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{position}\n" +
-            $"execute if entity @e[tag={entity}] run execute at @e[tag=funscript_teleportation_marker] run tp @e[tag={entity}] ~ ~ ~\n";
+            $"execute if entity @e[tag={entity}] run execute at @e[tag=funscript_teleportation_marker] run tp @e[tag={entity}] ~ ~ ~\n" +
+            "kill @e[tag=funscript_teleportation_marker]\n";
 
     }
     
