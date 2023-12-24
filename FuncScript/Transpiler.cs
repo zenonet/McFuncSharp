@@ -71,16 +71,16 @@ public static class Transpiler
         Add("data remove storage funcscript_memory { }");
         Add($"scoreboard players set one {Computation.ComputationScoreboard} 1");
 
-        
+
         // TODO: Fix this destroying line numbers
         /*// Remove comments:
         funcScriptCode = Regex.Replace(funcScriptCode, @"\/\/.*$|\/\*[\d\D]*?\*\/| (?= )", "", RegexOptions.Multiline);
         funcScriptCode = funcScriptCode.Replace("\r\n", "\n");
         funcScriptCode = funcScriptCode.Replace("\n", " ");
         funcScriptCode = funcScriptCode.Trim(' ', '\n', '\r');*/
-        
+
         Stopwatch sw = Stopwatch.StartNew();
-        TokenList tokens = Lexer.Lex(funcScriptCode);
+        TokenList tokens = PerformLexicalAnalysis(funcScriptCode);
         Console.WriteLine("Lexed in " + sw.ElapsedMilliseconds + "ms");
 
         sw.Restart();
@@ -112,6 +112,58 @@ public static class Transpiler
         Console.WriteLine("Generated Data Pack in " + sw.ElapsedMilliseconds + "ms");
 
         Console.WriteLine("Done!");
+    }
+
+    private static TokenList PerformLexicalAnalysis(string funcScriptCode)
+    {
+        return Lexer.Lex(funcScriptCode);
+
+        int threadsToUse = 4;
+
+        if (threadsToUse < 2)
+            return Lexer.Lex(funcScriptCode);
+
+
+        Task[] tasks = new Task[threadsToUse];
+
+        int optimalDistanceBetweenLinebreaks = funcScriptCode.Length / threadsToUse;
+
+        // No token can go beyond a line break so we can use them to split up the source code
+        int i = 0;
+        int lastSeparation = 0;
+        int lineBreak = funcScriptCode.IndexOf('\n');
+        // Go through each line break and decide which one to use for splitting up
+        while (lineBreak != -1 && i < 4)
+        {
+            // Signed distance is negative if the nearest optimal point is behind this linebreak
+            int distance = lineBreak - i * optimalDistanceBetweenLinebreaks;
+
+            if (distance < 30)
+            {
+                int start = lastSeparation;
+                int end = lineBreak;
+
+                Console.WriteLine($"Decided to dispatch a thread to lex the section {start}({funcScriptCode[start]}) to {end}({funcScriptCode[end]})");
+                tasks[i] = Task.Run(() => Lexer.Lex(funcScriptCode[start..end]));
+
+                lastSeparation = lineBreak;
+                i++;
+            }
+
+            lineBreak = funcScriptCode.IndexOf('\n', lineBreak + 1);
+        }
+
+        // Wait for all Tasks to finish
+        Task.WaitAll(tasks);
+
+        // Combine all sections into one TokenList
+        TokenList list = new();
+        foreach (Task task in tasks)
+        {
+            list.List.AddRange(((Task<TokenList>) task).Result);
+        }
+
+        return list;
     }
 
     private static void AddCalculationDimension()
