@@ -9,7 +9,7 @@ McFuncScript is a programming language that transpiles to McFunction (Minecraft 
 
 ### Language Features
 
-* Variables (dynamically typed)
+* Variables (statically typed)
 * If Statements
 * Loops (currently limited by maxCommandChainLength)
    * While loops 
