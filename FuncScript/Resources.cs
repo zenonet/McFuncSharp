@@ -80,7 +80,7 @@ public static class Resources
             {
                 if (parameters.Length != 2)
                 {
-                    LoggingManager.LogError($"The setblock function takes two arguments but received {parameters.Length} arguments.");
+                    LoggingManager.LogError($"The setBlock function takes two arguments but received {parameters.Length} arguments.");
                 }
 
                 if (!parameters[0].IsOfType<FuncBlock>())
@@ -93,7 +93,32 @@ public static class Resources
                 return "summon minecraft:marker ~ ~ ~ {\"Tags\":[\"funcscript_controlled\", \"blockPositioningMarker\"]}\n" + // Summon a temporary marker
                        $"data modify entity @e[tag=blockPositioningMarker, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}\n" + // Set the position of the marker
                        $"execute at @e[tag=blockPositioningMarker, limit=1] run setblock ~ ~ ~ {parameters[0].Generate()}\n" + // Set the block at the markers position
-                       "kill @e[tag=blockPositioningMarker, limit=1]"; // Kill the marker
+                       "kill @e[tag=blockPositioningMarker, limit=1]\n"; // Kill the marker
+            }
+        },
+        {
+            "compareBlock", parameters =>
+            {
+                if (parameters.Length != 2)
+                {
+                    LoggingManager.LogError($"The compareBlock function takes two arguments but received {parameters.Length} arguments.");
+                }
+
+                if (!parameters[0].IsOfType<FuncBlock>())
+                    LoggingManager.LogError($"The compareBlock function takes a block as its first argument but received {parameters[0].GetFuncTypeName()}.");
+
+                if (!parameters[1].IsOfType<FuncVector>())
+                    LoggingManager.LogError($"The compareBlock function takes a vector as its second argument but received {parameters[1].GetFuncTypeName()}.");
+
+                string id = IdManager.GetDataId();
+                ReturnValue = id;
+                Transpiler.MemoryTypes[id] = typeof(FuncBool);
+
+                return "summon marker 0 0 0 {Tags:[\"funcscript_controlled\", \"funcscript_compareBlock_helper\"]}\n" +
+                    $"data modify entity @e[tag=funcscript_compareBlock_helper, limit=1] Pos set from storage {MemoryManagement.MemoryTag} variables.{parameters[1].AsVarnameProvider()}\n"+
+                    $"execute at @e[tag=funcscript_compareBlock_helper] if block ~ ~ ~ {parameters[0].Generate()} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 1b\n"+
+                    $"execute at @e[tag=funcscript_compareBlock_helper] unless block ~ ~ ~ {parameters[0].Generate()} run data modify storage {MemoryManagement.MemoryTag} variables.{id} set value 0b\n"+
+                    "kill @e[tag=funcscript_compareBlock_helper]";
             }
         },
         {
