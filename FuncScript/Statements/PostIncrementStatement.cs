@@ -9,14 +9,14 @@ using SlowLang.Engine.Values;
 
 namespace FuncScript.Statements;
 
-public class IncrementStatement : StatementExtension, IInitializable
+public class PostIncrementStatement : StatementExtension, IInitializable
 {
     public static void Initialize()
     {
-        StatementExtensionRegistration.CreateStatementExtensionRegistration<VariableCall, IncrementStatement>(
+        StatementExtensionRegistration.CreateStatementExtensionRegistration<VariableCall, PostIncrementStatement>(
             TokenType.Plus, TokenType.Plus
         ).Register();
-        StatementExtensionRegistration.CreateStatementExtensionRegistration<VariableCall, IncrementStatement>(
+        StatementExtensionRegistration.CreateStatementExtensionRegistration<VariableCall, PostIncrementStatement>(
             TokenType.Minus, TokenType.Minus
         ).Register();
     }
@@ -27,15 +27,19 @@ public class IncrementStatement : StatementExtension, IInitializable
     }
 
     private VariableNameProvider variableNameProvider;
-
-    private Operator? Operator;
-
+    
     public override bool OnParse(ref TokenList list, Statement baseStatement)
     {
         VariableCall baseVariableCall = (VariableCall) baseStatement;
 
         TokenType operation = list.Pop().Type;
         list.Pop();
+
+        // Copy the value to the output variable before incrementing
+        string id = IdManager.GetDataId();
+        Transpiler.MemoryTypes[id] = Transpiler.MemoryTypes[baseVariableCall.VariableName];
+        MemoryManagement.MoveVariable(baseVariableCall.VariableName, id).Add();
+        variableNameProvider = new(id);
 
         // TODO: Fix
         MemoryManagement.MoveToComputationScoreboard(baseVariableCall.VariableName, "a").Add();
@@ -50,7 +54,6 @@ public class IncrementStatement : StatementExtension, IInitializable
         }
 
         MemoryManagement.MoveToStorage(baseVariableCall.VariableName, "a").Add();
-        variableNameProvider = new(baseVariableCall.VariableName);
         return true;
     }
 
