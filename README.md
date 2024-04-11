@@ -31,7 +31,9 @@ McFuncScript is a programming language that transpiles to McFunction (Minecraft 
   * Number
   * Vector (3D)
   * Entity (reference using a tag)
-  * EntityType
-  * BlockType
+  * EntityType[^1]
+  * BlockType[^1]
 * Advanced Minecraft specific functionality:
   * raycasting
+ 
+[^1]:This is a const type meaning it can't be assigned to variables (yet)
